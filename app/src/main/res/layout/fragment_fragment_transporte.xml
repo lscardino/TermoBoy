@@ -4,20 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment_transporte">
-<LinearLayout
+
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/RecycledEnFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    
-   <TextView
-       android:text="Hola"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_weight="1"/>
-    <TextView
-        android:text="Hola"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-</LinearLayout>
+    android:padding="10dp"
+    android:background="@android:color/holo_red_dark"
+    android:scrollbars="vertical"/>
 </FrameLayout>

@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -19,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
     String temeratura;
     String mmCubicos;
 
-    Map<String,Boolean> actualWeather;
+    Map<String, Boolean> actualWeather;
     String anteriorWeather = "Soleado";
     String nuevoWeather;
+    ArrayList<transporte_item> listaDeTrasnportes;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     AnimationDrawable animationDrawable;
 
@@ -66,10 +75,26 @@ public class MainActivity extends AppCompatActivity {
         txtDia.setText(fecha);
 
         actualWeather = new HashMap<>();
-        actualWeather.put("Soleado",false);
+        actualWeather.put("Soleado", false);
         actualWeather.put("Nublado", false);
         actualWeather.put("Ventoso", false);
         actualWeather.put("Lloviendo", false);
+
+        listaDeTrasnportes = new ArrayList<>();
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici,"Bici",0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche,"Coche",0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren,"Transporte Público",0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie,"Caminando",0));
+
+        //cosas para el fragment.
+        /*
+        mRecyclerView = findViewById(R.id.RecycledEnFragment);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new Trasnporte_Adapter(listaDeTrasnportes);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        */
 
 
         fireDataBase = FirebaseDatabase.getInstance();
@@ -80,24 +105,24 @@ public class MainActivity extends AppCompatActivity {
         ultimaFehca.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d("VALOR", child.getKey());
                     Query ultimaHora = child.getRef().orderByKey().limitToLast(1);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot child: dataSnapshot.getChildren()){
-                                Log.d("VALOR","segundo valor" + child.getKey());
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Log.d("VALOR", "segundo valor" + child.getKey());
                                 String horaFinal = child.getKey();
                                 temeratura = child.child("Temperatura").getValue().toString();
                                 humedad = child.child("Humedad").getValue().toString();
 
                                 presion = child.child("Presión").getValue().toString();
                                 velViento = child.child("Velocidad viento").getValue().toString();
-                                txtHumedad.setText("Humedad " +humedad.substring(0,5) + "%");
-                                txtTemp.setText("Temperatura " + temeratura.substring(0,5) + "ºC");
+                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
+                                txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
                                 //El resto
-                                Log.d("Valor","cantidad de datos: "  + child.getChildrenCount());
+                                Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
                                 estadoActual();
                                 cambiarFondo();
                             }
@@ -118,11 +143,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void cambiarFondo(){
+
+    public void cambiarFondo() {
         float temp = Float.parseFloat(temeratura);
 
-        Log.d("DATOS","Tiempo anterior antes del switch? : " + anteriorWeather);
-        switch (anteriorWeather){
+        Log.d("DATOS", "Tiempo anterior antes del switch? : " + anteriorWeather);
+        switch (anteriorWeather) {
             case "Soleado":
                 deSoleadoa();
                 break;
@@ -147,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void estadoActual(){
+    public void estadoActual() {
         float presionF = Float.parseFloat(presion);
         float velVientoF = Float.parseFloat(velViento);
         float humedadF = Float.parseFloat(humedad);
@@ -156,58 +182,58 @@ public class MainActivity extends AppCompatActivity {
 
         String actual;
 
-        if (temeraturaF >50.0){
+        if (temeraturaF > 50.0) {
             //Está lloviendo
             actual = "Nublado";
-            Log.d("DATOS","Segun los datos está Nublado");
+            Log.d("DATOS", "Segun los datos está Nublado");
 
-        }else if(velVientoF > 100){
+        } else if (velVientoF > 100) {
             //Hace viento
             actual = "Ventoso";
-        }else{
+        } else {
             //Hace sol - de hecho habría que mirar lo de la luminosidad.
             actual = "Soleado";
-            Log.d("DATOS","segun lso datos está Soleado");
+            Log.d("DATOS", "segun lso datos está Soleado");
         }
 
         limpiarBools(actual);
     }
 
     //limpia los booleanos - si está lloviendo no puede estar soleado.
-    public void limpiarBools(String esteNo){
+    public void limpiarBools(String esteNo) {
         Iterator it = actualWeather.entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry pareja = (Map.Entry)it.next();
+        while (it.hasNext()) {
+            Map.Entry pareja = (Map.Entry) it.next();
 
-            if ((boolean)pareja.getValue() == true){
+            if ((boolean) pareja.getValue() == true) {
                 //Pilla el tiempo que estaba puesto antes
                 anteriorWeather = pareja.getKey().toString();
                 Log.d("DATOS", "Tiempo anterior: " + anteriorWeather);
             }
 
-            if (pareja.getKey().equals(esteNo)){
+            if (pareja.getKey().equals(esteNo)) {
                 pareja.setValue(true);
                 nuevoWeather = pareja.getKey().toString();
                 Log.d("DATOS", "Tiempo nuevo: " + anteriorWeather);
-            }else{
+            } else {
                 pareja.setValue(false);
             }
         }
     }
 
-    public void deNubladoA(){
+    public void deNubladoA() {
 
-       //animationDrawable.stop();
-        switch (nuevoWeather){
+        //animationDrawable.stop();
+        switch (nuevoWeather) {
             case "Soleado":
-                Log.d("DATOS","Estaba nublado y pasa a soleado");
+                Log.d("DATOS", "Estaba nublado y pasa a soleado");
                 layoutPrincipal.setBackground(getDrawable(R.drawable.nublado_a_solead));
-                animationDrawable = (AnimationDrawable)layoutPrincipal.getBackground();
+                animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
                 animationDrawable.setEnterFadeDuration(1000);
                 animationDrawable.setExitFadeDuration(4000);
                 animationDrawable.setOneShot(true);
                 animationDrawable.start();
-            break;
+                break;
             default:
                 break;
 
@@ -218,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         //animationDrawable.stop();
         switch (nuevoWeather) {
             case "Nublado":
-                Log.d("DATOS","Estaba soleado y pasa a nublado");
+                Log.d("DATOS", "Estaba soleado y pasa a nublado");
                 layoutPrincipal.setBackground(getDrawable(R.drawable.lista_gradientes));
                 animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
                 animationDrawable.setEnterFadeDuration(1000);
@@ -231,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void anadirFragment(){
+    private void anadirFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     }
