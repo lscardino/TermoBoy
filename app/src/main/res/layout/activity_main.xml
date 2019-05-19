@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutPrincipal"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:background="@drawable/clielo_asulito"
-    >
+    android:background="@drawable/gradiente_1">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -20,21 +20,24 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tiempo"
-                android:textAlignment="center"
-                android:textColor="#575754"
-                android:textSize="18sp" />
-
 
             <ImageView
                 android:id="@+id/imgTiempo"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_solete_amarillo"
-                android:layout_marginTop="-25dp"/>
+                android:layout_height="228dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_solete_amarillo" />
+
+            <TextView
+                android:id="@+id/txtDia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dia"
+                android:layout_marginBottom="20dp"
+                android:textAlignment="center"
+                android:textColor="#F1ECEC"
+                android:textSize="24sp" />
 
         </LinearLayout>
 
@@ -45,12 +48,11 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginHorizontal="20dp"
-        android:background="@android:color/holo_red_dark"/>
-
+        android:background="#F1ECEC"/>
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="match_parent"
 
         android:orientation="vertical">
@@ -58,33 +60,41 @@
      <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="@color/colorPrimaryDark"
          android:layout_weight="5">
 
-         <Button
-             android:layout_width="wrap_content"
+         <TextView
+             android:id="@+id/Consejo"
+             android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:layout_centerInParent="true"
-             android:layout_marginTop="20dp"
-             android:textSize="14sp"
-             tools:text="Transporte" />
+             android:text="Consejo"
+             android:textColor="#F1ECEC"
+             android:gravity="center"
+             android:textAlignment="center"
+             android:textSize="24sp" />
 
      </RelativeLayout>
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:fillViewport="true">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <LinearLayout
         android:id="@+id/Datos"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="left"
         android:layout_weight="1"
         android:orientation="horizontal">
-
         <LinearLayout
             android:id="@+id/DatosIzquierda"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorAccent"
             android:orientation="vertical">
 
             <TextView
@@ -92,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="15dp"
                 android:layout_weight="2"
                 android:text="Temperatura"
                 android:textColor="#F1ECEC"
@@ -104,20 +114,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="0dp"
-                android:text="Humedad"
                 android:layout_weight="2"
+                android:text="Humedad"
                 android:textColor="#F1ECEC"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/txtLluvia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="0dp"
-                android:text="Lluvia"
                 android:layout_weight="2"
+                android:text="Lluvia"
                 android:textColor="#F1ECEC"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -126,14 +137,82 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/holo_red_dark"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtVelViento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="2"
+                android:text="Vel Viento"
+                android:textColor="#F1ECEC"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtSensacionTermica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="2"
+                android:text="sTermica"
+                android:textColor="#F1ECEC"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/Presion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="2"
+                android:text="Presion"
+                android:textColor="#F1ECEC"
+                android:textSize="18sp" />
         </LinearLayout>
-    </LinearLayout>
-
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/txtPolvo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:text="Cantidad de polvo en el aire"
+            android:textColor="#F1ECEC"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/Luminosidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="3"
+            android:text="Luminosidad"
+            android:textColor="#F1ECEC"
+            android:textSize="18sp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Encuenta"
+            android:layout_gravity="center"
+            android:layout_weight="3"/>
+
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>
+
+    </LinearLayout>
 
 
 </LinearLayout>

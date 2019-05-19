@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "126682626951",
+    "firebase_url": "https://termomovidas.firebaseio.com",
+    "project_id": "termomovidas",
+    "storage_bucket": "termomovidas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126682626951:android:f3e67eb00f80e0af",
+        "android_client_info": {
+          "package_name": "com.example.termoboy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126682626951-qtd13sat51vdk657udfgueqpd0bfs7co.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0MfbkzsjPF-LnCAdWISKWr4Jcmf285kk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126682626951-qtd13sat51vdk657udfgueqpd0bfs7co.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
