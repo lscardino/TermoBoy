@@ -1,6 +1,7 @@
 package com.example.termoboy;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     TextView txtLluvia;
     TextView txtPresion;
     TextView txtDia;
+    TextView txtConsejo;
 
     String fecha;
     String presion;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     AnimationDrawable animationDrawable;
+    TransitionDrawable transicion;
 
     private FirebaseDatabase fireDataBase;
     private DatabaseReference databaseReference;
@@ -64,11 +67,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         layoutPrincipal = findViewById(R.id.layoutPrincipal);
         txtHumedad = findViewById(R.id.txtHumedad);
         txtTemp = findViewById(R.id.txtTemperatura);
         txtLluvia = findViewById(R.id.txtLluvia);
         txtDia = findViewById(R.id.txtDia);
+        txtConsejo = findViewById(R.id.txtConsejo);
+
+        transicion = (TransitionDrawable) layoutPrincipal.getBackground();
 
         DateFormat df = new DateFormat();
         fecha = df.format("dd-MM", new Date()).toString();
@@ -227,12 +235,15 @@ public class MainActivity extends AppCompatActivity {
         switch (nuevoWeather) {
             case "Soleado":
                 Log.d("DATOS", "Estaba nublado y pasa a soleado");
-                layoutPrincipal.setBackground(getDrawable(R.drawable.nublado_a_solead));
+                /*layoutPrincipal.setBackground(getDrawable(R.drawable.nublado_a_solead));
                 animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
                 animationDrawable.setEnterFadeDuration(1000);
-                animationDrawable.setExitFadeDuration(4000);
+                animationDrawable.setExitFadeDuration(3000);
                 animationDrawable.setOneShot(true);
                 animationDrawable.start();
+                */
+                txtConsejo.setText("Hace un día estupendo para ir en bici!");
+                transicion.reverseTransition(5000);
                 break;
             default:
                 break;
@@ -244,13 +255,17 @@ public class MainActivity extends AppCompatActivity {
         //animationDrawable.stop();
         switch (nuevoWeather) {
             case "Nublado":
+
                 Log.d("DATOS", "Estaba soleado y pasa a nublado");
-                layoutPrincipal.setBackground(getDrawable(R.drawable.lista_gradientes));
+                                /*layoutPrincipal.setBackground(getDrawable(R.drawable.lista_gradientes));
                 animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
                 animationDrawable.setEnterFadeDuration(1000);
-                animationDrawable.setExitFadeDuration(4000);
+                animationDrawable.setExitFadeDuration(3000);
                 animationDrawable.setOneShot(true);
                 animationDrawable.start();
+                */
+                txtConsejo.setText("Mejor que hoy vayas en bus, y ojo no te olvides el paraguas!");
+                transicion.startTransition(5000);
                 break;
             default:
                 break;
