@@ -47,8 +47,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="30dp"
         android:background="#F1ECEC"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:fillViewport="true">
     <LinearLayout
 
         android:layout_width="match_parent"
@@ -60,6 +65,7 @@
      <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:layout_marginHorizontal="10dp"
          android:layout_weight="5">
 
          <TextView
@@ -74,11 +80,7 @@
 
      </RelativeLayout>
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:fillViewport="true">
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -97,6 +99,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/RecycledDatosIzquierda"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:scrollbars="vertical" />
+<!--
             <TextView
                 android:id="@+id/txtTemperatura"
                 android:layout_width="match_parent"
@@ -129,7 +138,7 @@
                 android:text="Lluvia"
                 android:textColor="#F1ECEC"
                 android:textSize="18sp" />
-
+-->
         </LinearLayout>
 
         <LinearLayout
@@ -139,6 +148,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/RecycledDatosDerecha"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:scrollbars="vertical" />
+<!--
             <TextView
                 android:id="@+id/txtVelViento"
                 android:layout_width="match_parent"
@@ -171,6 +187,7 @@
                 android:text="Presion"
                 android:textColor="#F1ECEC"
                 android:textSize="18sp" />
+-->
         </LinearLayout>
 
     </LinearLayout>
@@ -178,6 +195,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
         <TextView
@@ -210,9 +228,8 @@
 
     </LinearLayout>
 </LinearLayout>
-</ScrollView>
+
 
     </LinearLayout>
-
-
+</ScrollView>
 </LinearLayout>

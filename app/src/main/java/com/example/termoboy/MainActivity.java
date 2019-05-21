@@ -51,10 +51,17 @@ public class MainActivity extends AppCompatActivity {
     String anteriorWeather = "Soleado";
     String nuevoWeather;
     ArrayList<transporte_item> listaDeTrasnportes;
+    ArrayList<Datos_item> listaDeDatosIzquierda;
+    ArrayList<Datos_item> listaDeDatosDerecha;
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+
+    private RecyclerView recyclerViewIZ;
+    private RecyclerView.Adapter adapterIZ;
+    private RecyclerView.LayoutManager layoutManagerIZ;
+
+    private RecyclerView recyclerViewDR;
+    private RecyclerView.Adapter adapterDR;
+    private RecyclerView.LayoutManager layoutManagerDR;
 
     AnimationDrawable animationDrawable;
     TransitionDrawable transicion;
@@ -70,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         layoutPrincipal = findViewById(R.id.layoutPrincipal);
-        txtHumedad = findViewById(R.id.txtHumedad);
-        txtTemp = findViewById(R.id.txtTemperatura);
-        txtLluvia = findViewById(R.id.txtLluvia);
+        //txtHumedad = findViewById(R.id.txtHumedad);
+        //txtTemp = findViewById(R.id.txtTemperatura);
+        //txtLluvia = findViewById(R.id.txtLluvia);
         txtDia = findViewById(R.id.txtDia);
         txtConsejo = findViewById(R.id.txtConsejo);
 
@@ -94,15 +101,35 @@ public class MainActivity extends AppCompatActivity {
         listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren,"Transporte Público",0));
         listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie,"Caminando",0));
 
+        listaDeDatosIzquierda = new ArrayList<>();
+        listaDeDatosIzquierda.add(new Datos_item("TEMP","30","ºC"));
+        listaDeDatosIzquierda.add(new Datos_item("%HUM","45","%"));
+        listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
+
+        listaDeDatosDerecha = new ArrayList<>();
+        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO","20","Km/H"));
+        listaDeDatosDerecha.add(new Datos_item("S. TERMICA","23","ºC"));
+        listaDeDatosDerecha.add(new Datos_item("PRES","34","Atm"));
+
+        txtConsejo.setText("Hace un día estupendo para ir en bici!");
+
         //cosas para el fragment.
-        /*
-        mRecyclerView = findViewById(R.id.RecycledEnFragment);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new Trasnporte_Adapter(listaDeTrasnportes);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-        */
+
+        recyclerViewIZ = findViewById(R.id.RecycledDatosIzquierda);
+        recyclerViewIZ.setHasFixedSize(true);
+        layoutManagerIZ = new LinearLayoutManager(this);
+        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+        recyclerViewIZ.setAdapter(adapterIZ);
+
+
+        recyclerViewDR = findViewById(R.id.RecycledDatosDerecha);
+        recyclerViewDR.setHasFixedSize(true);
+        layoutManagerDR = new LinearLayoutManager(this);
+        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
+        recyclerViewDR.setLayoutManager(layoutManagerDR);
+        recyclerViewDR.setAdapter(adapterDR);
+
 
 
         fireDataBase = FirebaseDatabase.getInstance();
@@ -124,12 +151,28 @@ public class MainActivity extends AppCompatActivity {
                                 String horaFinal = child.getKey();
                                 temeratura = child.child("Temperatura").getValue().toString();
                                 humedad = child.child("Humedad").getValue().toString();
-
                                 presion = child.child("Presión").getValue().toString();
                                 velViento = child.child("Velocidad viento").getValue().toString();
-                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
-                                txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
+//                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
+  //                              txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
                                 //El resto
+
+                                listaDeDatosIzquierda.clear();
+
+                                listaDeDatosIzquierda.add(new Datos_item("TEMP",temeratura.substring(0,5),"ºC"));
+                                listaDeDatosIzquierda.add(new Datos_item("%HUM",humedad.substring(0,5),"%"));
+                                listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
+
+
+                                recyclerViewIZ = findViewById(R.id.RecycledDatosIzquierda);
+                                recyclerViewIZ.setHasFixedSize(true);
+                                layoutManagerIZ = new LinearLayoutManager(getApplicationContext());
+                                adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+                                recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+                                recyclerViewIZ.setAdapter(adapterIZ);
+
+
+
                                 Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
                                 estadoActual();
                                 cambiarFondo();
@@ -149,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 
