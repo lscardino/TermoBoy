@@ -20,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
     TextView txtPresion;
     TextView txtDia;
     TextView txtConsejo;
+
     ImageView imgTiempo;
+    ImageView imgTiempoNuevo;
 
     String fecha;
     String presion;
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     String humedad;
     String temeratura;
     String mmCubicos;
+
+    boolean primerChequeo;
 
     Map<String, Boolean> actualWeather;
     String anteriorWeather = "Soleado";
@@ -95,10 +100,13 @@ public class MainActivity extends AppCompatActivity {
         txtDia = findViewById(R.id.txtDia);
         txtConsejo = findViewById(R.id.txtConsejo);
         imgTiempo = findViewById(R.id.imgTiempoViejo);
+        imgTiempoNuevo = findViewById(R.id.imgTiempoNuevo);
+
+        imgTiempo.bringToFront();
 
         //Animaciones
         transicionFondo = (TransitionDrawable) layoutPrincipal.getBackground();
-        transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
+        //transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
         fadeOut = AnimationUtils.loadAnimation(getApplicationContext()
                 ,R.anim.fadeout);
         fadeIn = AnimationUtils.loadAnimation(getApplicationContext()
@@ -151,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewDR.setLayoutManager(layoutManagerDR);
         recyclerViewDR.setAdapter(adapterDR);
 
+        //Primitivos
+        //quizás esto habrái que guardarlo en otra parte...
+        //Y de hecho, una vez tengamos lo de los lumens, esto será innecesario -
+        //El fondo se cambiará en otro metodo ya que depende de variables difernetes
+        //a aquellas que controlan los iconos.
+        primerChequeo = true;
+
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
@@ -195,8 +210,16 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
-                                estadoActual();
-                                cambiarFondo();
+
+                                String estadoACambiar = estadoActual();
+                                //cambiarFondo();
+                                if (!primerChequeo) {
+                                    cambiarIcono(estadoACambiar);
+                                }else{
+                                    if (estadoACambiar.equals("Soleado")){
+                                        primerChequeo = false;
+                                    }
+                                }
                             }
                         }
 
@@ -217,36 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void cambiarFondo() {
-        float temp = Float.parseFloat(temeratura);
-
-        Log.d("DATOS", "Tiempo anterior antes del switch? : " + anteriorWeather);
-        switch (anteriorWeather) {
-            case "Soleado":
-                deSoleadoa();
-                break;
-            case "Nublado":
-                deNubladoA();
-                break;
-        }
-
-/*
-        if (temp > 35){
-
-            AnimationDrawable animationDrawable = (AnimationDrawable)layoutPrincipal.getBackground();
-            animationDrawable.setEnterFadeDuration(2000);
-            animationDrawable.setExitFadeDuration(4000);
-            animationDrawable.setOneShot(true);
-            animationDrawable.start();
-            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_lila_gris));
-        }else{
-            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_1));
-        }
-        */
-
-    }
-
-    public void estadoActual() {
+    public String estadoActual() {
         float presionF = Float.parseFloat(presion);
         float velVientoF = Float.parseFloat(velViento);
         float humedadF = Float.parseFloat(humedad);
@@ -269,9 +263,77 @@ public class MainActivity extends AppCompatActivity {
             Log.d("DATOS", "segun lso datos está Soleado");
         }
 
-        limpiarBools(actual);
+        return actual;
+
+        //limpiarBools(actual);
     }
 
+
+    private void cambiarIcono(String tiempoNuevo) {
+
+        //Esto lo hace al revés, pero porque le pasas el valor del tiempo anterior, no del Nuevo.
+        //YA NO, já!
+        switch (tiempoNuevo){
+            case "Soleado":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
+                transicionFondo.reverseTransition(5000);
+                break;
+            case "Nublado":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
+                transicionFondo.startTransition(5000);
+                break;
+        }
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) { }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imgTiempo.setImageDrawable(imgTiempoNuevo.getDrawable()); }
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+        });
+        imgTiempo.startAnimation(fadeOut);
+        imgTiempoNuevo.startAnimation(fadeIn);
+
+
+    }
+
+    /*
+    public void cambiarFondo() {
+        float temp = Float.parseFloat(temeratura);
+
+        Log.d("DATOS", "Tiempo anterior antes del switch? : " + anteriorWeather);
+
+
+        switch (anteriorWeather) {
+            case "Soleado":
+                cambiarIcono("Soleado");
+                break;
+            case "Nublado":
+                cambiarIcono("Nublado");
+                break;
+        }
+
+
+
+        if (temp > 35){
+
+            AnimationDrawable animationDrawable = (AnimationDrawable)layoutPrincipal.getBackground();
+            animationDrawable.setEnterFadeDuration(2000);
+            animationDrawable.setExitFadeDuration(4000);
+            animationDrawable.setOneShot(true);
+            animationDrawable.start();
+            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_lila_gris));
+        }else{
+            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_1));
+        }
+
+
+    }
+    */
+
+        /*
     //limpia los booleanos - si está lloviendo no puede estar soleado.
     public void limpiarBools(String esteNo) {
         Iterator it = actualWeather.entrySet().iterator();
@@ -307,16 +369,37 @@ public class MainActivity extends AppCompatActivity {
                 animationDrawable.setOneShot(true);
                 animationDrawable.start();
                 */
+    /*
                 txtConsejo.setText("Hace un día estupendo para ir en bici!");
                 transicionFondo.reverseTransition(5000);
-                imgTiempo.setImageDrawable(transicionIcono);
-                transicionIcono.reverseTransition(5000);
+
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
+                fadeIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) { }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo)); }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) { }
+                });
+
+                imgTiempo.startAnimation(fadeOut);
+                imgTiempoNuevo.startAnimation(fadeIn);
+
+                /*imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
+                imgTiempoNuevo.setVisibility(View.VISIBLE);
+                imgTiempoNuevo.startAnimation(fadeIn);
+                imgTiempo = imgTiempoNuevo;
+
                 break;
             default:
                 break;
 
         }
     }
+     */
+    /*
 
     public void deSoleadoa() {
         //animationDrawable.stop();
@@ -331,11 +414,28 @@ public class MainActivity extends AppCompatActivity {
                 animationDrawable.setOneShot(true);
                 animationDrawable.start();
                 */
+        /*
                 txtConsejo.setText("Mejor que hoy vayas en bus, y ojo no te olvides el paraguas!");
                 transicionFondo.startTransition(5000);
-                imgTiempo.setImageDrawable(transicionIcono);
-                transicionIcono.startTransition(5000);
-                //imgTiempo.startAnimation(fadeOut);
+                //imgTiempo.setImageDrawable(transicionIcono);
+                //transicionIcono.startTransition(5000);
+
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
+                fadeIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) { }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube)); }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) { }
+                });
+                //imgTiempoNuevo.setVisibility(View.VISIBLE);
+                imgTiempoNuevo.startAnimation(fadeIn);
+                imgTiempo.startAnimation(fadeOut);
+                //imgTiempo = imgTiempoNuevo;
+                //imgTiempoNuevo.setVisibility(View.INVISIBLE);
+
                 //imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
 
                 break;
@@ -343,10 +443,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-    private void anadirFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    }
+*/
 
 }
