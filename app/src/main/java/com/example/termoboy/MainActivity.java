@@ -1,17 +1,23 @@
 package com.example.termoboy;
 
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     TextView txtPresion;
     TextView txtDia;
     TextView txtConsejo;
+    ImageView imgTiempo;
 
     String fecha;
     String presion;
@@ -64,7 +71,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManagerDR;
 
     AnimationDrawable animationDrawable;
-    TransitionDrawable transicion;
+    Animation fadeOut;
+    Animation fadeIn;
+    TransitionDrawable transicionFondo;
+    TransitionDrawable transicionIcono;
+
 
     private FirebaseDatabase fireDataBase;
     private DatabaseReference databaseReference;
@@ -76,19 +87,30 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        //Elementos del layout
         layoutPrincipal = findViewById(R.id.layoutPrincipal);
         //txtHumedad = findViewById(R.id.txtHumedad);
         //txtTemp = findViewById(R.id.txtTemperatura);
         //txtLluvia = findViewById(R.id.txtLluvia);
         txtDia = findViewById(R.id.txtDia);
         txtConsejo = findViewById(R.id.txtConsejo);
+        imgTiempo = findViewById(R.id.imgTiempoViejo);
 
-        transicion = (TransitionDrawable) layoutPrincipal.getBackground();
+        //Animaciones
+        transicionFondo = (TransitionDrawable) layoutPrincipal.getBackground();
+        transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
+        fadeOut = AnimationUtils.loadAnimation(getApplicationContext()
+                ,R.anim.fadeout);
+        fadeIn = AnimationUtils.loadAnimation(getApplicationContext()
+                ,R.anim.fadein);
 
+
+        //DATE y TIME's
         DateFormat df = new DateFormat();
         fecha = df.format("dd-MM", new Date()).toString();
         txtDia.setText(fecha);
 
+        //Arrays y listas
         actualWeather = new HashMap<>();
         actualWeather.put("Soleado", false);
         actualWeather.put("Nublado", false);
@@ -113,8 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         txtConsejo.setText("Hace un día estupendo para ir en bici!");
 
-        //cosas para el fragment.
-
+        //Recycled views
         recyclerViewIZ = findViewById(R.id.RecycledDatosIzquierda);
         recyclerViewIZ.setHasFixedSize(true);
         layoutManagerIZ = new LinearLayoutManager(this);
@@ -131,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewDR.setAdapter(adapterDR);
 
 
-
+        //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
         databaseReference = fireDataBase.getReference("Dia");
         Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
@@ -287,7 +308,9 @@ public class MainActivity extends AppCompatActivity {
                 animationDrawable.start();
                 */
                 txtConsejo.setText("Hace un día estupendo para ir en bici!");
-                transicion.reverseTransition(5000);
+                transicionFondo.reverseTransition(5000);
+                imgTiempo.setImageDrawable(transicionIcono);
+                transicionIcono.reverseTransition(5000);
                 break;
             default:
                 break;
@@ -309,7 +332,12 @@ public class MainActivity extends AppCompatActivity {
                 animationDrawable.start();
                 */
                 txtConsejo.setText("Mejor que hoy vayas en bus, y ojo no te olvides el paraguas!");
-                transicion.startTransition(5000);
+                transicionFondo.startTransition(5000);
+                imgTiempo.setImageDrawable(transicionIcono);
+                transicionIcono.startTransition(5000);
+                //imgTiempo.startAnimation(fadeOut);
+                //imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
+
                 break;
             default:
                 break;
