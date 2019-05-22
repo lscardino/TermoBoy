@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     TextView txtPresion;
     TextView txtDia;
     TextView txtConsejo;
+    TextView txtInforGeneral;
+    TextView txtNivelPolvo;
 
     ImageView imgTiempo;
     ImageView imgTiempoNuevo;
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
         //txtLluvia = findViewById(R.id.txtLluvia);
         txtDia = findViewById(R.id.txtDia);
         txtConsejo = findViewById(R.id.txtConsejo);
+        txtInforGeneral = findViewById(R.id.txtInformacionGeneral);
+        txtNivelPolvo = findViewById(R.id.txtPolvo);
         imgTiempo = findViewById(R.id.imgTiempoViejo);
         imgTiempoNuevo = findViewById(R.id.imgTiempoNuevo);
 
@@ -240,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Hace los calculas para saber que decirle al user, quizas sería menester poner esto en otra
+    //clase
     public String estadoActual() {
         float presionF = Float.parseFloat(presion);
         float velVientoF = Float.parseFloat(velViento);
