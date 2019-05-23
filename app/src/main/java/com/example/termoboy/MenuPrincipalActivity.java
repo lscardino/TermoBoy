@@ -11,13 +11,17 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MenuPrincipalActivity extends Fragment {
+public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
     LinearLayout layoutPrincipal;
     TextView txtTemp;
@@ -87,6 +91,9 @@ public class MenuPrincipalActivity extends Fragment {
 
     private FirebaseDatabase fireDataBase;
     private DatabaseReference databaseReference;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser usuario;
 
     public MenuPrincipalActivity(){
     }
@@ -176,6 +183,14 @@ public class MenuPrincipalActivity extends Fragment {
         //a aquellas que controlan los iconos.
         primerChequeo = true;
 
+        //User DB
+        mAuth = FirebaseAuth.getInstance();
+        usuario = mAuth.getCurrentUser();
+
+        //Boton prueba a borrar
+        Button prueba = view.findViewById(R.id.btPrueba);
+        prueba.setOnClickListener(this);
+
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
@@ -193,10 +208,11 @@ public class MenuPrincipalActivity extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                Log.d("VALOR", "segundo valor " + child.getKey());
+                                Log.d("VALOR", "Valor a leer " + child.getKey());
 
                                 //Sequenccia de control, pra ver si es en formato 00:00 el "child"
-                                if(child.getKey().length() <= 5 && child.getKey().indexOf(':') > 0){
+                                if(!child.getKey().equals("Transporte")){
+                                    Log.d("VALOR", "Valor a leer(DENTRO) " + child.getKey());
                                     String horaFinal = child.getKey();
                                     //Izquierda
                                     temeratura = child.child("Temperatura").getValue().toString();
@@ -341,6 +357,19 @@ public class MenuPrincipalActivity extends Fragment {
         imgTiempoNuevo.startAnimation(fadeIn);
 
 
+    }
+
+    public void escribirBasura(View view){
+        databaseReference = fireDataBase.getReference("movidas");
+        databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d("DATOS","Clicl");
+        databaseReference = fireDataBase.getReference("movidas");
+        databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
     }
 
     /*
