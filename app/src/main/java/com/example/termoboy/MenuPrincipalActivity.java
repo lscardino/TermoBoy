@@ -50,7 +50,15 @@ public class MenuPrincipalActivity extends Fragment {
     String velViento;
     String humedad;
     String temeratura;
-    String mmCubicos;
+    String lluvia;
+    String polvo;
+    String sensacionT;
+    String estadoInicial = "Soleado";
+    String luminosidadInicial = "Dia";
+
+    String estadoACambiar;
+    String luminosidadNueva;
+
 
     boolean primerChequeo;
 
@@ -180,29 +188,39 @@ public class MenuPrincipalActivity extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d("VALOR", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(1);
+                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                Log.d("VALOR", "segundo valor" + child.getKey());
+                                Log.d("VALOR", "segundo valor " + child.getKey());
 
                                 //Sequenccia de control, pra ver si es en formato 00:00 el "child"
                                 if(child.getKey().length() <= 5 && child.getKey().indexOf(':') > 0){
                                     String horaFinal = child.getKey();
+                                    //Izquierda
                                     temeratura = child.child("Temperatura").getValue().toString();
                                     humedad = child.child("Humedad").getValue().toString();
-                                    presion = child.child("Presión").getValue().toString();
+                                    lluvia = child.child("Lluvia").getValue().toString();
+                                    //Derecha
                                     velViento = child.child("Velocidad viento").getValue().toString();
-    //                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
-                                    //                              txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
-                                    //El resto
+                                    presion = child.child("Presión").getValue().toString();
+                                    sensacionT = child.child("Sensacion").getValue().toString();
+
+                                    //Abajo
+                                    polvo = child.child("Polvo").getValue().toString();
+    //
 
                                     listaDeDatosIzquierda.clear();
+                                    listaDeDatosIzquierda.add(new Datos_item("TEMP.",temeratura,"ºC"));
+                                    listaDeDatosIzquierda.add(new Datos_item("%HUM.",humedad,"%"));
+                                    listaDeDatosIzquierda.add(new Datos_item("LLUV.","0","mm/h"));
 
-                                    listaDeDatosIzquierda.add(new Datos_item("TEMP",temeratura.substring(0,5),"ºC"));
-                                    listaDeDatosIzquierda.add(new Datos_item("%HUM",humedad.substring(0,5),"%"));
-                                    listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
+                                    listaDeDatosDerecha.clear();
+                                    listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO",velViento,"Km/H"));
+                                    listaDeDatosDerecha.add(new Datos_item("S. TERMICA",sensacionT,"ºC"));
+                                    listaDeDatosDerecha.add(new Datos_item("PRES.", presion,"Pa"));
+
 
 
                                     recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
@@ -213,18 +231,33 @@ public class MenuPrincipalActivity extends Fragment {
                                     recyclerViewIZ.setAdapter(adapterIZ);
 
 
+                                    recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
+                                    recyclerViewDR.setHasFixedSize(true);
+                                    layoutManagerDR = new LinearLayoutManager(view.getContext());
+                                    adapterDR = new Datos_Adapter(listaDeDatosDerecha);
+                                    recyclerViewDR.setLayoutManager(layoutManagerDR);
+                                    recyclerViewDR.setAdapter(adapterDR);
+
 
                                     Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
-                                    String estadoACambiar = estadoActual();
-                                    //cambiarFondo();
-                                    if (!primerChequeo) {
+                                    //Lo primero, el fondo.
+                                    //Cuando tengamos lo de lso lumens.
+                                    //luminosidadNueva = Calculos.devolverLuminosidad(lumens);
+
+
+                                    //Cambiar la funcion estado actual para qeu haga las movidas chungas de calculos.
+                                    estadoACambiar = estadoActual();
+                                    if (!estadoACambiar.equals(estadoInicial)){
                                         cambiarIcono(estadoACambiar);
+                                        estadoInicial = estadoACambiar;
+
                                     }else{
-                                        if (estadoACambiar.equals("Soleado")){
-                                            primerChequeo = false;
-                                        }
+                                        //Los iconos se quedan igual
                                     }
+
+
+
 
                                 }
                             }

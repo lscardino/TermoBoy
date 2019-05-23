@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:drawable="@drawable/gradiente_azulitorosa"
+        android:duration="4000"/>
+
+    <item
         android:drawable="@drawable/gradiente_naranjarosa"
         android:duration="4000"/>
 
-    <item android:drawable="@drawable/gradiente_lila_gris"
+    <item
+        android:drawable="@drawable/gradiente_azulnaranja"
         android:duration="4000"/>
 </animation-list>

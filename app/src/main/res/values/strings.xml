@@ -3,4 +3,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="seleccionGenero">Selecciona tu genero</string>
+    <string name="popUpBienvenida">Antes de continuar nos gustaría que nos proporcionases
+    un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,
+    esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor
+    experiencia a los usuarios.</string>
+    <string-array name="itemsGenero">
+        <item>Hombre</item>
+        <item>Mujer</item>
+        <item>Otro</item>
+    </string-array>
 </resources>
