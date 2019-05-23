@@ -1,12 +1,12 @@
 package com.example.termoboy;
 
-import android.app.Fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -186,41 +186,46 @@ public class MenuPrincipalActivity extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
                                 Log.d("VALOR", "segundo valor" + child.getKey());
-                                String horaFinal = child.getKey();
-                                temeratura = child.child("Temperatura").getValue().toString();
-                                humedad = child.child("Humedad").getValue().toString();
-                                presion = child.child("Presión").getValue().toString();
-                                velViento = child.child("Velocidad viento").getValue().toString();
-//                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
-                                //                              txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
-                                //El resto
 
-                                listaDeDatosIzquierda.clear();
+                                //Sequenccia de control, pra ver si es en formato 00:00 el "child"
+                                if(child.getKey().length() <= 5 && child.getKey().indexOf(':') > 0){
+                                    String horaFinal = child.getKey();
+                                    temeratura = child.child("Temperatura").getValue().toString();
+                                    humedad = child.child("Humedad").getValue().toString();
+                                    presion = child.child("Presión").getValue().toString();
+                                    velViento = child.child("Velocidad viento").getValue().toString();
+    //                                txtHumedad.setText("Humedad " + humedad.substring(0, 5) + "%");
+                                    //                              txtTemp.setText("Temperatura " + temeratura.substring(0, 5) + "ºC");
+                                    //El resto
 
-                                listaDeDatosIzquierda.add(new Datos_item("TEMP",temeratura.substring(0,5),"ºC"));
-                                listaDeDatosIzquierda.add(new Datos_item("%HUM",humedad.substring(0,5),"%"));
-                                listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
+                                    listaDeDatosIzquierda.clear();
 
-
-                                recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
-                                recyclerViewIZ.setHasFixedSize(true);
-                                layoutManagerIZ = new LinearLayoutManager(view.getContext());
-                                adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
-                                recyclerViewIZ.setLayoutManager(layoutManagerIZ);
-                                recyclerViewIZ.setAdapter(adapterIZ);
+                                    listaDeDatosIzquierda.add(new Datos_item("TEMP",temeratura.substring(0,5),"ºC"));
+                                    listaDeDatosIzquierda.add(new Datos_item("%HUM",humedad.substring(0,5),"%"));
+                                    listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
 
 
+                                    recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
+                                    recyclerViewIZ.setHasFixedSize(true);
+                                    layoutManagerIZ = new LinearLayoutManager(view.getContext());
+                                    adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+                                    recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+                                    recyclerViewIZ.setAdapter(adapterIZ);
 
-                                Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
-                                String estadoACambiar = estadoActual();
-                                //cambiarFondo();
-                                if (!primerChequeo) {
-                                    cambiarIcono(estadoACambiar);
-                                }else{
-                                    if (estadoACambiar.equals("Soleado")){
-                                        primerChequeo = false;
+
+                                    Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
+
+                                    String estadoACambiar = estadoActual();
+                                    //cambiarFondo();
+                                    if (!primerChequeo) {
+                                        cambiarIcono(estadoACambiar);
+                                    }else{
+                                        if (estadoACambiar.equals("Soleado")){
+                                            primerChequeo = false;
+                                        }
                                     }
+
                                 }
                             }
                         }
