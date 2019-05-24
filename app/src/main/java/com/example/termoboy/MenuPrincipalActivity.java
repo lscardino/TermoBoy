@@ -217,7 +217,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
                                     Log.d("VALOR", "Hijos de  " + child.getKey() + ": " + child.getChildrenCount());
                                     String horaFinal = child.getKey();
                                     //Izquierda
-
+//ff
                                     if (child.getChildrenCount() == 9) {
                                         temeratura = child.child("Temperatura").getValue().toString();
                                         humedad = child.child("Humedad").getValue().toString();
