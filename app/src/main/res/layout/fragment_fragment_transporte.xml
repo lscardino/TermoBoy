@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment_transporte"
     android:orientation="vertical"
-    android:background="@drawable/gradiente_azulitorosa">
+    android:background="@drawable/gradiente_lilarosa">
 
     <TextView
         android:layout_marginTop="30dp"
