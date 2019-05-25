@@ -3,10 +3,17 @@ package com.example.termoboy;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 
 public class Calculos {
     float presionF;
@@ -52,10 +59,13 @@ public class Calculos {
     public static String comoEstaElTiempoEh(String mmCubicos,
                                             String velViento, String sensacionTermica, String presion) {
 
-        String comoEstaElClima = ".";
+        String comoEstaElClima = "";
         float velVientoF = Float.valueOf(velViento);
         float mmCubicosF = Float.valueOf(mmCubicos);
         float sensacionTermicaF = Float.valueOf(sensacionTermica);
+
+
+       // Map<String,Integer> contadoVehiculos = new HashMap<>();
 
         int coche = 0;
         int bici = 0;
@@ -64,52 +74,50 @@ public class Calculos {
         int casa = 0;
 
 
-        HashMap<String, Integer> listaVehiculos = new HashMap<>();
-        listaVehiculos.put("Coche", 0);
-        listaVehiculos.put("Bici", 0);
-        listaVehiculos.put("A pie", 0);
-        listaVehiculos.put("T publico", 0);
+
+
+
+
 
 
         //Sensacion termica.
         if (sensacionTermicaF > 30) {
-            comoEstaElClima += "Calor abrasador.";
+            comoEstaElClima += "hace un calor abrasador-";
             apie--;
-            tPub -=2;
-            coche+=2;
+            tPub -= 2;
+            coche += 2;
 
         } else if (sensacionTermicaF > 25) {
-            comoEstaElClima += "Calorcete.";
+            comoEstaElClima += "hace calorcete-";
             tPub--;
 
 
-
         } else if (sensacionTermicaF > 15) {
-            comoEstaElClima += "Temperatura agradable.";
-            bici = +2;
+            comoEstaElClima += "la temperatura es agradable-";
+            bici += 2;
             apie++;
             coche -= 2;
 
 
         } else if (sensacionTermicaF > 7) {
-            tPub+=2;
+            tPub += 2;
             apie++;
             coche--;
 
-            comoEstaElClima += "Fresca.";
+            comoEstaElClima += "hace fresca-";
         } else if (sensacionTermicaF > 0) {
             bici--;
             apie--;
 
 
-            comoEstaElClima += "Frio.";
+            comoEstaElClima += "hace frio-";
             coche++;
-            tPub = +2;
-            bici = -2;
+            tPub += 2;
+            bici -= 2;
 
         } else {
-            comoEstaElClima += "Congelado.";
-            coche = +3;
+            comoEstaElClima += "las temperaturas están bajo cero-";
+            coche += 3;
             casa += 7;
             apie -= 3;
             bici -= 4;
@@ -122,18 +130,18 @@ public class Calculos {
         //Viento
         //Quizas 3 valores es muy poco
         if (velVientoF > 110) {
-            comoEstaElClima += "HURACAN.";
+            comoEstaElClima += "HURACAN-";
             casa += 20;
 
         } else if (velVientoF > 40) {
-            comoEstaElClima += "Fuertes Vientos.";
-            bici = -3;
+            comoEstaElClima += "fuertes vientos-";
+            bici -= 3;
             apie -= 2;
             coche++;
-            tPub+=2;
+            tPub += 2;
 
         } else {
-            comoEstaElClima += "Brisa agradable.";
+            comoEstaElClima += "una brisa agradable-";
             coche -= 4;
             bici += 3;
             apie += 3;
@@ -146,71 +154,104 @@ public class Calculos {
         if (mmCubicosF > 100) {
 
 
-            comoEstaElClima += "Lluvia Torrencial.";
-            casa = +3;
-            coche = +3;
+            comoEstaElClima += " está lloviendo de forma torrencial-";
+            casa += 3;
+            coche += 3;
             apie -= 6;
             bici -= 8;
             tPub--;
 
         } else if (mmCubicosF > 40) {
-            comoEstaElClima += "Fuerte Lluvia.";
-            casa = +1;
-            coche = +3;
+            comoEstaElClima += "Está cayendo una fuerte lluvia-";
+            casa += 1;
+            coche += 3;
             apie -= 4;
             bici -= 5;
             tPub--;
 
 
         } else if (mmCubicosF > 10) {
-            comoEstaElClima += "Lluvia Moderada.";
+            comoEstaElClima += "llueve moderadamente-";
             coche++;
-            apie-=2;
-            bici -=2;
+            apie -= 2;
+            bici -= 2;
 
         } else if (mmCubicosF > 2.5) {
-            comoEstaElClima += "Ligera Lluvia.";
+            comoEstaElClima += "está lloviendo ligeramente-";
             coche++;
             bici--;
 
 
         } else if (mmCubicosF > 0) {
-            comoEstaElClima += "Llovizna.";
+            comoEstaElClima += "están cayendo cuatro gotas-";
             tPub++;
             coche--;
 
 
         } else {
-            comoEstaElClima += "Despejado.";
-            apie +=3;
-            bici +=5;
-            coche-=4;
+            comoEstaElClima += "el clima está despejado-";
+            apie += 3;
+            bici += 5;
+            coche -= 4;
         }
+
+        /*
+        contadoVehiculos.add(coche);
+        contadoVehiculos.add(bici);
+        contadoVehiculos.add(tPub);
+        contadoVehiculos.add(apie);
+
+        Collections.sort(contadoVehiculos);
+        */
+
+
 
         Log.d("VALOR", "Coche: " + coche);
         Log.d("VALOR", "Bici: " + bici);
         Log.d("VALOR", "TPub: " + tPub);
         Log.d("VALOR", "A pie: " + apie);
 
-        List<Integer> listaFinal = new ArrayList<>(listaVehiculos.values());
+        Map<Integer, String> listaVehiculos = new TreeMap<>();
+        listaVehiculos.put(coche,"venir en coche");
+        listaVehiculos.put(bici,"venir en bici");
+        listaVehiculos.put(apie,"venir a pie");
+        listaVehiculos.put(tPub, "coger el transporte publico");
+        listaVehiculos.put(casa, "quedarte en casa");
+
+        Log.d("VALOR", "Mapa " + listaVehiculos);
+
+        String [] seleccionaricono = comoEstaElClima.split("-");
+
+        String enviar = "el cielo está despejado";
+        for (String dato:
+             seleccionaricono) {
+            Log.d("VALOR", "elemento " +  dato);
+
+            if (dato.equals("HURACAN")){
+                enviar = "HAY UN HURACAN";
+                break;
+            }else if(dato.contains("lluvia") || dato.contains("gotas")
+                    || dato.contains("lloviendo")
+                    || dato.contains("llueve")){
+                enviar =  dato;
+                if  (dato.contains("vientos")){
+                    enviar = "hay tormenta";
+                    break;
+                }
+                break;
+            }else{
+                //esto es despejado - pero hay que ver si hace frio o no
+                if (dato.contains("vientos")){
+                    enviar="hay fuertes vientos";}
+            }
+            Log.d("VALOR", "dato a enviar de momento " + enviar);
+
+        }
+        Log.d("VALOR", "dato a enviar " + enviar);
 
 
 
-        int maxValor =0;
-        String trasnporteEscogido;
-
-        /*
-        Iterator it = listaVehiculos.entrySet().iterator();
-        while (it.hasNext()){
-            Map.Entry pareja = (Map.Entry)it.next();
-            if (pareja.getValue())
-
-        }*/
-
-
-
-
-        comoEstaElClima += "final";
+        comoEstaElClima += ((TreeMap<Integer, String>) listaVehiculos).lastEntry().getValue() + "-" + enviar;
 
 
         return comoEstaElClima;

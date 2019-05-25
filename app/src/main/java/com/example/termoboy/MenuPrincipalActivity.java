@@ -82,11 +82,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     private RecyclerView.Adapter adapterDR;
     private RecyclerView.LayoutManager layoutManagerDR;
 
-    AnimationDrawable animationDrawable;
     Animation fadeOut;
     Animation fadeIn;
     TransitionDrawable transicionFondo;
-    TransitionDrawable transicionIcono;
 
 
     private FirebaseDatabase fireDataBase;
@@ -109,10 +107,8 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         //Elementos del layout
         layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
-        //txtHumedad = findViewById(R.id.txtHumedad);
-        //txtTemp = findViewById(R.id.txtTemperatura);
-        //txtLluvia = findViewById(R.id.txtLluvia);
         txtDia = view.findViewById(R.id.txtDia);
+        txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
         txtConsejo = view.findViewById(R.id.txtConsejo);
         txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
         txtNivelPolvo = view.findViewById(R.id.txtPolvo);
@@ -158,7 +154,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         listaDeDatosDerecha.add(new Datos_item("S. TERMICA", "23", "ºC"));
         listaDeDatosDerecha.add(new Datos_item("PRES", "34", "Atm"));
 
-        txtConsejo.setText("Hace un día estupendo para ir en bici!");
+        //txtConsejo.setText("Hace un día estupendo para ir en bici!");
 
         //Recycled views
         recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
@@ -204,7 +200,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
                 Log.d("KEY: ", dataSnapshot.getKey());
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d("KEY HIJO PRINCIPAL", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(1);
+                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -234,7 +230,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
                                         listaDeDatosIzquierda.clear();
                                         listaDeDatosIzquierda.add(new Datos_item("TEMP.", temeratura, "ºC"));
                                         listaDeDatosIzquierda.add(new Datos_item("%HUM.", humedad, "%"));
-                                        listaDeDatosIzquierda.add(new Datos_item("LLUV.", "0", "mm/h"));
+                                        listaDeDatosIzquierda.add(new Datos_item("LLUV.", lluvia, "mm/h"));
 
                                         listaDeDatosDerecha.clear();
                                         listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", velViento, "Km/H"));
@@ -260,13 +256,50 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
                                         Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
+                                        String eee = Calculos.comoEstaElTiempoEh(lluvia,velViento,sensacionT,presion);
+
+                                        Log.d("VALOR de eee: " , eee);
+
+                                        //Por alguna razo ensto no funcina -- era por el punto
+                                        String[] todoSeparado = eee.split("-");
+                                        for (String aa:
+                                             todoSeparado) {
+                                            Log.d("VALOR elementosDARO: " , aa );
+                                        }
+
+                                        String vehiculo = todoSeparado[todoSeparado.length-2];
+                                        String tiempo = todoSeparado[todoSeparado.length-1];
+                                        txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
+
+                                        Log.d("VALOR Vehiculo: ", vehiculo );
+
+                                        Log.d("VALOR Icono: ", tiempo );
+
+
+
+
+                                        /*
+                                        if (tiempo.contains("lluvia") || tiempo.contains("gotas")
+                                                || tiempo.contains("lloviendo")
+                                                || tiempo.contains("llueve")){
+                                            //Icono de lluvia
+                                        }else if (tiempo.contains("HURACAN")){
+                                            //Huracan
+                                        }else if(tiempo.contains("vientos")){
+                                            //Viento
+                                        }else{
+                                            //despejado
+                                            //Hay que mirar lo de los lumnes aki y de hecho
+                                            //Cambiar el icono tmb
+                                        }
+                                         */
                                         //Lo primero, el fondo.
                                         //Cuando tengamos lo de lso lumens.
                                         //luminosidadNueva = Calculos.devolverLuminosidad(lumens);
 
-
+                                        //cambiarIcono(tiempo);
                                         //Cambiar la funcion estado actual para qeu haga las movidas chungas de calculos.
-                                        estadoACambiar = estadoActual();
+                                        estadoACambiar = tiempo;
                                         if (!estadoACambiar.equals(estadoInicial)) {
                                             cambiarIcono(estadoACambiar);
                                             estadoInicial = estadoACambiar;
@@ -334,15 +367,45 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
     private void cambiarIcono(String tiempoNuevo) {
 
+
+        if (tiempoNuevo.contains("lluvia") || tiempoNuevo.contains("gotas")
+                || tiempoNuevo.contains("lloviendo")
+                || tiempoNuevo.contains("llueve")){
+            tiempoNuevo = "Lluvia";
+        }else if (tiempoNuevo.contains("HURACAN")){
+            tiempoNuevo = "HURACAN";
+            //Huracan
+        }else if(tiempoNuevo.contains("vientos")){
+            tiempoNuevo = "Viento";
+            //Viento
+        }else{
+            tiempoNuevo = "Solete";
+            //despejado
+            //Hay que mirar lo de los lumnes aki y de hecho
+            //Cambiar el icono tmb
+        }
+
         //Esto lo hace al revés, pero porque le pasas el valor del tiempo anterior, no del Nuevo.
         //YA NO, já!
         switch (tiempoNuevo) {
-            case "Soleado":
-                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
+            case "Viento":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_viento));
                 transicionFondo.reverseTransition(5000);
                 break;
             case "Nublado":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
+                transicionFondo.startTransition(5000);
+                break;
+            case "Lluvia":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_lluvia));
+                transicionFondo.startTransition(5000);
+                break;
+            case "HURACAN":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_tornado));
+                transicionFondo.startTransition(5000);
+                break;
+            case "Solete":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
                 transicionFondo.startTransition(5000);
                 break;
         }
