@@ -50,15 +50,12 @@ public class Bienvenido_Registro extends AppCompatActivity {
             Log.d("DATOS","Usuario existe already");
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
-
-
     }
 
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
-
     }
 
     public void entrarApp(View view) {
@@ -71,14 +68,12 @@ public class Bienvenido_Registro extends AppCompatActivity {
                 }
             }
         });
-
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
     public void mostrarPopUp() {
        FireMissilesDialogFragment a = new FireMissilesDialogFragment();
        a.show(getSupportFragmentManager(),"ee");
-
     }
 }
 
