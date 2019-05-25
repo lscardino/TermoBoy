@@ -53,16 +53,44 @@ public class fragment_transporte extends Fragment {
         DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
         Query ultimaFecha = databaseReference.orderByKey().limitToLast(1);
 
-        Log.d("DEBUG", "Mira Query " + ultimaFecha.toString());
+        // Log.d("DEBUG", "Mira Query " + ultimaFecha.toString());
 
         //Mira la ultima fecha introducida.
         ultimaFecha.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot children : dataSnapshot.getChildren()) {
+                    ///
+                    Log.d("TRANS", "Dia actual " + children.getKey());
+                    Log.d("TRANS", "Dia actual numero de hijos " + children.getChildrenCount());
 
-                    Log.d("DEBUG", "Que hora " + children.getKey());
-                    //Guarda valor si el usuario ha escrito alguna vez ese día
+                    //me parecia un nombre bastante dramatico - eso me gusta
+                    Query ultimaHijo = children.getRef().orderByKey().limitToLast(1);
+                    ultimaHijo.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot transporte : dataSnapshot.getChildren()) {
+                                Log.d("TRANS", "Tag del hijo " + transporte.getKey());
+                                //pon aqui lo que estabas haciendo
+                                DatabaseReference a = transporte.getRef();
+                                a.child("Coche").setValue("eeee");
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    ///////
+                    ///////
+                    ///////
+                    ///////
+                    ///////
+
 
                     if (children.getKey().equals("Transporte")) {
                         Log.d("DEBUG", "Es transporte");
@@ -103,7 +131,7 @@ public class fragment_transporte extends Fragment {
 
             private long controlErrorMap(String keyMap) {
 
-                Log.d("DEBUG", "Dato subir "+ keyMap);
+                Log.d("DEBUG", "Dato subir " + keyMap);
                 try {
                     return convertDataToProgressData(listaTotal.get(keyMap));
                 } catch (NullPointerException ex) {

@@ -118,7 +118,6 @@ public class Calculos {
         } else {
             comoEstaElClima += "las temperaturas están bajo cero-";
             coche += 3;
-            casa += 7;
             apie -= 3;
             bici -= 4;
         }
@@ -163,7 +162,6 @@ public class Calculos {
 
         } else if (mmCubicosF > 40) {
             comoEstaElClima += "Está cayendo una fuerte lluvia-";
-            casa += 1;
             coche += 3;
             apie -= 4;
             bici -= 5;
