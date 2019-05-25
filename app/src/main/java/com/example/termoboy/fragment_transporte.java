@@ -34,18 +34,21 @@ public class fragment_transporte extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        //mFirebaseAuth = FirebaseAuth.getInstance();
 
-        String userID = mFirebaseAuth.getUid();
+        //String userID = mFirebaseAuth.getUid();
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
-        databaseReference = mFirebaseDatabase.getReference("Dia/" + databaseReference.orderByKey().limitToLast(1)+ "Transporte");
-        if(databaseReference.child(userID).getKey() != null){
+        //mFirebaseDatabase = FirebaseDatabase.getInstance();
+      // DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
+       // Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
+        //ultimaFehca.
+        //databaseReference = mFirebaseDatabase.getReference("Dia/" + databaseReference.orderByKey().limitToLast(1)+ "Transporte");
+       /* if(databaseReference.child(userID).getKey() != null){
             guardadoTransporte = true;
         }else{
             guardadoTransporte = false;
         }
+        */
     }
 
     @Override

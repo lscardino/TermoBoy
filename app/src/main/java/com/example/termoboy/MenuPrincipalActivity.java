@@ -200,7 +200,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
                 Log.d("KEY: ", dataSnapshot.getKey());
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d("KEY HIJO PRINCIPAL", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(1);
+                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
