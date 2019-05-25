@@ -95,7 +95,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     private FirebaseAuth mAuth;
     private FirebaseUser usuario;
 
-    public MenuPrincipalActivity(){
+    public MenuPrincipalActivity() {
     }
 
     @Override
@@ -104,11 +104,11 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.activity_principal_menu, container, false);
 
         //Elementos del layout
-                layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
+        layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
         //txtHumedad = findViewById(R.id.txtHumedad);
         //txtTemp = findViewById(R.id.txtTemperatura);
         //txtLluvia = findViewById(R.id.txtLluvia);
@@ -125,9 +125,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         transicionFondo = (TransitionDrawable) layoutPrincipal.getBackground();
         //transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
         fadeOut = AnimationUtils.loadAnimation(view.getContext()
-                ,R.anim.fadeout);
+                , R.anim.fadeout);
         fadeIn = AnimationUtils.loadAnimation(view.getContext()
-                ,R.anim.fadein);
+                , R.anim.fadein);
 
 
         //DATE y TIME's
@@ -143,20 +143,20 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         actualWeather.put("Lloviendo", false);
 
         listaDeTrasnportes = new ArrayList<>();
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici,"Bici",0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche,"Coche",0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren,"Transporte Público",0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie,"Caminando",0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", 0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", 0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", 0));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", 0));
 
         listaDeDatosIzquierda = new ArrayList<>();
-        listaDeDatosIzquierda.add(new Datos_item("TEMP","30","ºC"));
-        listaDeDatosIzquierda.add(new Datos_item("%HUM","45","%"));
-        listaDeDatosIzquierda.add(new Datos_item("LLUV","0","mm3"));
+        listaDeDatosIzquierda.add(new Datos_item("TEMP", "30", "ºC"));
+        listaDeDatosIzquierda.add(new Datos_item("%HUM", "45", "%"));
+        listaDeDatosIzquierda.add(new Datos_item("LLUV", "0", "mm3"));
 
         listaDeDatosDerecha = new ArrayList<>();
-        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO","20","Km/H"));
-        listaDeDatosDerecha.add(new Datos_item("S. TERMICA","23","ºC"));
-        listaDeDatosDerecha.add(new Datos_item("PRES","34","Atm"));
+        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", "20", "Km/H"));
+        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", "23", "ºC"));
+        listaDeDatosDerecha.add(new Datos_item("PRES", "34", "Atm"));
 
         txtConsejo.setText("Hace un día estupendo para ir en bici!");
 
@@ -201,9 +201,10 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         ultimaFehca.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("KEY: ", dataSnapshot.getKey());
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Log.d("VALOR", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
+                    Log.d("KEY HIJO PRINCIPAL", child.getKey());
+                    Query ultimaHora = child.getRef().orderByKey().limitToLast(1);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -211,69 +212,71 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
                                 Log.d("VALOR", "Valor a leer " + child.getKey());
 
                                 //Sequenccia de control, pra ver si es en formato 00:00 el "child"
-                                if(!child.getKey().equals("Transporte")){
+                                if (!child.getKey().equals("Transporte")) {
                                     Log.d("VALOR", "Valor a leer(DENTRO) " + child.getKey());
+                                    Log.d("VALOR", "Hijos de  " + child.getKey() + ": " + child.getChildrenCount());
                                     String horaFinal = child.getKey();
                                     //Izquierda
-                                    temeratura = child.child("Temperatura").getValue().toString();
-                                    humedad = child.child("Humedad").getValue().toString();
-                                    lluvia = child.child("Lluvia").getValue().toString();
-                                    //Derecha
-                                    velViento = child.child("Velocidad viento").getValue().toString();
-                                    presion = child.child("Presión").getValue().toString();
-                                    sensacionT = child.child("Sensacion").getValue().toString();
+//ff
+                                    if (child.getChildrenCount() == 9) {
+                                        temeratura = child.child("Temperatura").getValue().toString();
+                                        humedad = child.child("Humedad").getValue().toString();
+                                        lluvia = child.child("Lluvia").getValue().toString();
+                                        //Derecha
+                                        velViento = child.child("Velocidad viento").getValue().toString();
+                                        presion = child.child("Presión").getValue().toString();
+                                        sensacionT = child.child("Sensacion").getValue().toString();
 
-                                    //Abajo
-                                    polvo = child.child("Polvo").getValue().toString();
-    //
+                                        //Abajo
+                                        polvo = child.child("Polvo").getValue().toString();
+                                        //
 
-                                    listaDeDatosIzquierda.clear();
-                                    listaDeDatosIzquierda.add(new Datos_item("TEMP.",temeratura,"ºC"));
-                                    listaDeDatosIzquierda.add(new Datos_item("%HUM.",humedad,"%"));
-                                    listaDeDatosIzquierda.add(new Datos_item("LLUV.","0","mm/h"));
+                                        listaDeDatosIzquierda.clear();
+                                        listaDeDatosIzquierda.add(new Datos_item("TEMP.", temeratura, "ºC"));
+                                        listaDeDatosIzquierda.add(new Datos_item("%HUM.", humedad, "%"));
+                                        listaDeDatosIzquierda.add(new Datos_item("LLUV.", "0", "mm/h"));
 
-                                    listaDeDatosDerecha.clear();
-                                    listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO",velViento,"Km/H"));
-                                    listaDeDatosDerecha.add(new Datos_item("S. TERMICA",sensacionT,"ºC"));
-                                    listaDeDatosDerecha.add(new Datos_item("PRES.", presion,"Pa"));
-
-
-
-                                    recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
-                                    recyclerViewIZ.setHasFixedSize(true);
-                                    layoutManagerIZ = new LinearLayoutManager(view.getContext());
-                                    adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
-                                    recyclerViewIZ.setLayoutManager(layoutManagerIZ);
-                                    recyclerViewIZ.setAdapter(adapterIZ);
+                                        listaDeDatosDerecha.clear();
+                                        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", velViento, "Km/H"));
+                                        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", sensacionT, "ºC"));
+                                        listaDeDatosDerecha.add(new Datos_item("PRES.", presion, "Pa"));
 
 
-                                    recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
-                                    recyclerViewDR.setHasFixedSize(true);
-                                    layoutManagerDR = new LinearLayoutManager(view.getContext());
-                                    adapterDR = new Datos_Adapter(listaDeDatosDerecha);
-                                    recyclerViewDR.setLayoutManager(layoutManagerDR);
-                                    recyclerViewDR.setAdapter(adapterDR);
+                                        recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
+                                        recyclerViewIZ.setHasFixedSize(true);
+                                        layoutManagerIZ = new LinearLayoutManager(view.getContext());
+                                        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+                                        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+                                        recyclerViewIZ.setAdapter(adapterIZ);
 
 
-                                    Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
+                                        recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
+                                        recyclerViewDR.setHasFixedSize(true);
+                                        layoutManagerDR = new LinearLayoutManager(view.getContext());
+                                        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
+                                        recyclerViewDR.setLayoutManager(layoutManagerDR);
+                                        recyclerViewDR.setAdapter(adapterDR);
 
-                                    //Lo primero, el fondo.
-                                    //Cuando tengamos lo de lso lumens.
-                                    //luminosidadNueva = Calculos.devolverLuminosidad(lumens);
+
+                                        Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
+
+                                        //Lo primero, el fondo.
+                                        //Cuando tengamos lo de lso lumens.
+                                        //luminosidadNueva = Calculos.devolverLuminosidad(lumens);
 
 
-                                    //Cambiar la funcion estado actual para qeu haga las movidas chungas de calculos.
-                                    estadoACambiar = estadoActual();
-                                    if (!estadoACambiar.equals(estadoInicial)){
-                                        cambiarIcono(estadoACambiar);
-                                        estadoInicial = estadoACambiar;
+                                        //Cambiar la funcion estado actual para qeu haga las movidas chungas de calculos.
+                                        estadoACambiar = estadoActual();
+                                        if (!estadoACambiar.equals(estadoInicial)) {
+                                            cambiarIcono(estadoACambiar);
+                                            estadoInicial = estadoACambiar;
 
-                                    }else{
-                                        //Los iconos se quedan igual
+                                        } else {
+                                            //Los iconos se quedan igual
+                                        }
+
+
                                     }
-
-
-
 
                                 }
                             }
@@ -333,7 +336,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         //Esto lo hace al revés, pero porque le pasas el valor del tiempo anterior, no del Nuevo.
         //YA NO, já!
-        switch (tiempoNuevo){
+        switch (tiempoNuevo) {
             case "Soleado":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
                 transicionFondo.reverseTransition(5000);
@@ -346,12 +349,17 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         fadeIn.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) { }
+            public void onAnimationStart(Animation animation) {
+            }
+
             @Override
             public void onAnimationEnd(Animation animation) {
-                imgTiempo.setImageDrawable(imgTiempoNuevo.getDrawable()); }
+                imgTiempo.setImageDrawable(imgTiempoNuevo.getDrawable());
+            }
+
             @Override
-            public void onAnimationRepeat(Animation animation) { }
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
         imgTiempo.startAnimation(fadeOut);
         imgTiempoNuevo.startAnimation(fadeIn);
@@ -359,7 +367,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
     }
 
-    public void escribirBasura(View view){
+    public void escribirBasura(View view) {
         databaseReference = fireDataBase.getReference("movidas");
         databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
 
@@ -367,7 +375,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.d("DATOS","Clicl");
+        Log.d("DATOS", "Clicl");
         databaseReference = fireDataBase.getReference("movidas");
         databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
     }

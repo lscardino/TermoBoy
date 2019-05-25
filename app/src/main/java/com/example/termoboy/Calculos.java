@@ -75,12 +75,13 @@ public class Calculos {
         if (sensacionTermicaF > 30) {
             comoEstaElClima += "Calor abrasador.";
             apie--;
-            tPub = -2;
-            coche++;
+            tPub -=2;
+            coche+=2;
 
         } else if (sensacionTermicaF > 25) {
             comoEstaElClima += "Calorcete.";
             tPub--;
+
 
 
         } else if (sensacionTermicaF > 15) {
@@ -91,7 +92,7 @@ public class Calculos {
 
 
         } else if (sensacionTermicaF > 7) {
-            tPub = +2;
+            tPub+=2;
             apie++;
             coche--;
 
@@ -129,12 +130,12 @@ public class Calculos {
             bici = -3;
             apie -= 2;
             coche++;
-
+            tPub+=2;
 
         } else {
             comoEstaElClima += "Brisa agradable.";
-            coche -= 3;
-            bici += 2;
+            coche -= 4;
+            bici += 3;
             apie += 3;
 
 
@@ -183,7 +184,7 @@ public class Calculos {
             comoEstaElClima += "Despejado.";
             apie +=3;
             bici +=5;
-            coche-=3;
+            coche-=4;
         }
 
         Log.d("VALOR", "Coche: " + coche);
