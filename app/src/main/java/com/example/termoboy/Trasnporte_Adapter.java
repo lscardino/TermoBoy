@@ -36,7 +36,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private ImageView imageView;
         private TextView mTextView;
         private ProgressBar mProgress;
-        private int numeroTransporte;
+        private long numeroTransporte;
         private boolean mainClicked = false;
         //Faltaria lo de la barra de progreso
 
