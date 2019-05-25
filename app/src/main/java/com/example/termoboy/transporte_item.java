@@ -3,9 +3,9 @@ package com.example.termoboy;
 public class transporte_item {
     private int transporteImg;
     private String transporteNombre;
-    private long transporteCantidad;
+    private int transporteCantidad;
 
-    public transporte_item(int transporteImg, String transporteNombre, long transporteCantidad) {
+    public transporte_item(int transporteImg, String transporteNombre, int transporteCantidad) {
         this.transporteImg = transporteImg;
         this.transporteNombre = transporteNombre;
         this.transporteCantidad = transporteCantidad;
@@ -27,7 +27,7 @@ public class transporte_item {
         this.transporteNombre = transporteNombre;
     }
 
-    public long gettransporteCantidad() {
+    public int gettransporteCantidad() {
         return transporteCantidad;
     }
 
