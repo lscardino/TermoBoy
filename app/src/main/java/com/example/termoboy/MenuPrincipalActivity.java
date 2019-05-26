@@ -69,7 +69,6 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     Map<String, Boolean> actualWeather;
     String anteriorWeather = "Soleado";
     String nuevoWeather;
-    ArrayList<transporte_item> listaDeTrasnportes;
     ArrayList<Datos_item> listaDeDatosIzquierda;
     ArrayList<Datos_item> listaDeDatosDerecha;
 
@@ -137,12 +136,6 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         actualWeather.put("Nublado", false);
         actualWeather.put("Ventoso", false);
         actualWeather.put("Lloviendo", false);
-
-        listaDeTrasnportes = new ArrayList<>();
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", 0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", 0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", 0));
-        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", 0));
 
         listaDeDatosIzquierda = new ArrayList<>();
         listaDeDatosIzquierda.add(new Datos_item("TEMP", "30", "ºC"));

@@ -2,14 +2,30 @@ package com.example.termoboy;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.TransporteViewHolder> {
 
@@ -17,9 +33,11 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
     private boolean cliked = false;
     private Object sincronizedObj = new Object();
 
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseDatabase mFirebaseDatabase;
+
     public Trasnporte_Adapter(ArrayList<transporte_item> listaTransportesA, boolean mClicked) {
         this.listaTransportesA = listaTransportesA;
-
         this.cliked = mClicked;
     }
 
@@ -38,6 +56,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private ProgressBar mProgress;
         private long numeroTransporte;
         private boolean mainClicked = false;
+        private String transporteID;
         //Faltaria lo de la barra de progreso
 
         public TransporteViewHolder(@NonNull final View itemView) {
@@ -49,15 +68,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             ThreadProgress thread = new ThreadProgress();
             thread.start();
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!cliked) {
-                        mainClicked = true;
-                        viewClicked();
-                    }
-                }
-            });
+            itemView.setOnClickListener(new ListenerClick());
 
             if (cliked) {
                 viewClicked();
@@ -67,7 +78,42 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private void viewClicked() {
             synchronized (sincronizedObj) {
                 cliked = true;
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sincronizedObj.notifyAll();
+            }
+        }
+
+        class ListenerClick implements View.OnClickListener{
+
+            private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            @Override
+            public void onClick(View v) {
+                if (!cliked) {
+                    mainClicked = true;
+                    viewClicked();
+
+                    Date date = new Date();
+                    mFirebaseAuth = FirebaseAuth.getInstance();
+
+                    final String userID = mFirebaseAuth.getUid();
+
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    final DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
+
+                    //Guarda valor si el usuario ha escrito alguna vez ese día
+/*
+                                                DatabaseReference a = transporte.getRef();
+                                                a.child("Coche").setValue("eeee");*/
+                    Map<String, Object> dato = new HashMap<>();
+                    dato.put(userID,"");
+
+                    //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
+                    databaseReference.child(dateFormat.format(date)+"/Transporte/"+transporteID).updateChildren(dato);
+                }
             }
         }
 
@@ -126,6 +172,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         transporteViewHolder.imageView.setImageResource(currentItem.getTransporteImg());
         transporteViewHolder.mTextView.setText(currentItem.getTransporteNombre());
         transporteViewHolder.numeroTransporte = currentItem.gettransporteCantidad();
+        transporteViewHolder.transporteID = currentItem.getTransporteID();
         transporteViewHolder.mProgress.setMax(100);
         if(!this.cliked){
             transporteViewHolder.mProgress.setVisibility(View.INVISIBLE);

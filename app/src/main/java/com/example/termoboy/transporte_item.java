@@ -3,11 +3,13 @@ package com.example.termoboy;
 public class transporte_item {
     private int transporteImg;
     private String transporteNombre;
+    private String transporteID;
     private int transporteCantidad;
 
-    public transporte_item(int transporteImg, String transporteNombre, int transporteCantidad) {
+    public transporte_item(int transporteImg, String transporteNombre, String transporteID, int transporteCantidad) {
         this.transporteImg = transporteImg;
         this.transporteNombre = transporteNombre;
+        this.transporteID = transporteID;
         this.transporteCantidad = transporteCantidad;
     }
 
@@ -33,5 +35,13 @@ public class transporte_item {
 
     public void settransporteCantidad(int transporteCantidad) {
         this.transporteCantidad = transporteCantidad;
+    }
+
+    public String getTransporteID() {
+        return transporteID;
+    }
+
+    public void setTransporteID(String transporteID) {
+        this.transporteID = transporteID;
     }
 }
