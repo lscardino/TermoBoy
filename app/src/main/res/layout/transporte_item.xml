@@ -37,7 +37,7 @@
             android:layout_toEndOf="@+id/imgtransporte"
             android:background="@android:color/transparent"
             android:max="100"
-            android:backgroundTint="#F1ECEC"
+            android:progressBackgroundTint="@color/backgroundCBarraProg"
             android:progressTint="@color/design_default_color_primary_dark"
             android:layout_marginRight="10dp"/>
 

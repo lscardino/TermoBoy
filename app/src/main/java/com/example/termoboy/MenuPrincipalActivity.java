@@ -1,6 +1,7 @@
 package com.example.termoboy;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
@@ -66,6 +67,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     String estadoACambiar;
     String luminosidadNueva;
 
+    int getUserEdat;
+    String getUserGenero;
+
 
     boolean primerChequeo;
 
@@ -95,25 +99,30 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     private FirebaseAuth mAuth;
     private FirebaseUser usuario;
 
+    SharedPreferences getPrefUser;
+
+
     public MenuPrincipalActivity() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.activity_principal_menu, container, false);
 
+
         //Elementos del layout
         layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
         txtDia = view.findViewById(R.id.txtDia);
-        txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
         txtConsejo = view.findViewById(R.id.txtConsejo);
-        txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
-        txtNivelPolvo = view.findViewById(R.id.txtPolvo);
+       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+       // txtNivelPolvo = view.findViewById(R.id.txtPolvo);
         imgTiempo = view.findViewById(R.id.imgTiempoViejo);
         imgTiempoNuevo = view.findViewById(R.id.imgTiempoNuevo);
 
@@ -180,8 +189,13 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         usuario = mAuth.getCurrentUser();
 
         //Boton prueba a borrar
-        Button prueba = view.findViewById(R.id.btPrueba);
-        prueba.setOnClickListener(this);
+       // Button prueba = view.findViewById(R.id.btPrueba);
+        //prueba.setOnClickListener(this);
+
+        //Sharedpref
+        getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
+        getUserEdat = getPrefUser.getInt("edatUser",99);
+        getUserGenero = getPrefUser.getString("generoUser","none");
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
@@ -434,8 +448,11 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     @Override
     public void onClick(View v) {
         Log.d("DATOS", "Clicl");
+
+
         databaseReference = fireDataBase.getReference("movidas");
-        databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
+        databaseReference.child("User/" + usuario.getUid() +"-"+ getUserGenero + "-" + getUserEdat)
+                .setValue("Buenas");
     }
 
 

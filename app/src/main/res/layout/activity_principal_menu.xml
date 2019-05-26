@@ -11,8 +11,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -74,38 +74,38 @@
         android:layout_marginHorizontal="30dp"
         android:background="#F1ECEC" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+
+        >
+
+        <TextView
+            android:id="@+id/txtConsejo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:gravity="center"
+
+            android:text="Consejo"
+            android:textAlignment="center"
+            android:textColor="#F1ECEC"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+
+
 
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="5"
 
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:layout_weight="5">
-
-                <TextView
-                    android:id="@+id/txtConsejo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:text="Consejo"
-                    android:textAlignment="center"
-                    android:textColor="#F1ECEC"
-                    android:textSize="24sp" />
-
-            </RelativeLayout>
 
 
             <LinearLayout
@@ -125,16 +125,16 @@
                         android:id="@+id/DatosIzquierda"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_marginLeft="30dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/RecycledDatosIzquierda"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="10dp"
                             android:layout_marginLeft="20dp"
+                            android:padding="10dp"
 
                             android:scrollbars="vertical" />
                         <!--
@@ -184,8 +184,8 @@
                             android:id="@+id/RecycledDatosDerecha"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="10dp"
                             android:layout_marginLeft="20dp"
+                            android:padding="10dp"
                             android:scrollbars="vertical" />
                         <!--
                                     <TextView
@@ -228,8 +228,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="3"
                     android:orientation="vertical">
 
                     <TextView
@@ -237,12 +237,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="40dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="5dp"
                         android:layout_weight="3"
-                        android:text="Algo de informacion"
+                        android:text="Cantidad de polvo en el aire:"
                         android:textAlignment="center"
                         android:textColor="#F1ECEC"
                         android:textSize="22sp" />
+
+
+<!--
 
                     <TextView
                         android:id="@+id/txtPolvo"
@@ -254,7 +257,6 @@
                         android:text="Polvo"
                         android:textColor="#F1ECEC"
                         android:textSize="22sp" />
-
                     <Button
                         android:id="@+id/btPrueba"
                         android:layout_width="wrap_content"
@@ -263,11 +265,12 @@
                         android:layout_marginBottom="20dp"
                         android:layout_weight="3"
                         android:text="Encuenta" />
+                        -->
 
                 </LinearLayout>
             </LinearLayout>
 
 
         </LinearLayout>
-    </ScrollView>
+
 </LinearLayout>
