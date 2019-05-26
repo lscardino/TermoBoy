@@ -445,6 +445,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
     }
 
+
+
+
     /*
     public void cambiarFondo() {
         float temp = Float.parseFloat(temeratura);
