@@ -170,6 +170,11 @@ public class fragment_transporte extends Fragment {
                         }
                     });
 
+                Log.d("DEBUG", "Dato subir "+ keyMap);
+                try {
+                    return convertDataToProgressData(listaTotal.get(keyMap));
+                } catch (NullPointerException ex) {
+                    return 0;
                 }
 
             }

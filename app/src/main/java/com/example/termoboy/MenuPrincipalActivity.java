@@ -1,7 +1,10 @@
 package com.example.termoboy;
 
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -179,7 +182,6 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         //Boton prueba a borrar
         Button prueba = view.findViewById(R.id.btPrueba);
         prueba.setOnClickListener(this);
-
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
