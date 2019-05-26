@@ -1,7 +1,5 @@
 package com.example.termoboy;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -21,7 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +31,12 @@ public class fragment_transporte extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapterTransporte;
     private RecyclerView.LayoutManager layoutManager;
-    private boolean guardadoTransporte;
+    private boolean guardadoTransporte = false;
+
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 
     private final HashMap<String, Long> listaTotal = new HashMap<>();
     private long numTransporte;
@@ -45,38 +49,119 @@ public class fragment_transporte extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
-        final String userID = "Mimi";//mFirebaseAuth.getUid();
+        final String userID = mFirebaseAuth.getUid();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
         Query ultimaFecha = databaseReference.orderByKey().limitToLast(1);
 
-        // Log.d("DEBUG", "Mira Query " + ultimaFecha.toString());
+        //Peta si se quita el día y est adentro de la app
+        databaseReference.child(dateFormat.format(new Date()) + "/Transporte").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot entrada : dataSnapshot.getChildren()) {
+                    Log.d("TRANS", "Dato enviado " + entrada.getKey() + " de " + entrada.getChildrenCount());
 
+                    String transporte = entrada.getKey();
+                    listaTotal.put(transporte, entrada.getChildrenCount());
+
+                    if (entrada.child(userID).exists()) {
+                        guardadoTransporte = true;
+                        Log.d("TRANS", "Clickado y guardado transporte -> " + guardadoTransporte);
+                    }
+                }
+                numTransporte = 0;
+                for (Map.Entry pair : listaTotal.entrySet()) {
+                    numTransporte += (long) pair.getValue();
+                }
+                listaDeTrasnportes = new ArrayList<>();
+                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", "Bici", controlErrorMap("Bici")));
+                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", "Coche", controlErrorMap("Coche")));
+                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", "Tpublico", controlErrorMap("Tpublico")));
+                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", "Apie", controlErrorMap("Apie")));
+
+                recargarDatosBarraProgreso();
+            }
+
+            private int controlErrorMap(String keyMap) {
+                try {
+                    return (int) ((listaTotal.get(keyMap) * 100) / numTransporte);
+                } catch (NullPointerException ex) {
+                    return 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        Log.d("TRANS", "Mira Query " + ultimaFecha.toString());
+/*
         //Mira la ultima fecha introducida.
         ultimaFecha.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot children : dataSnapshot.getChildren()) {
-                    ///
-                    Log.d("TRANS", "Dia actual " + children.getKey());
-                    Log.d("TRANS", "Dia actual numero de hijos " + children.getChildrenCount());
 
-                    //me parecia un nombre bastante dramatico - eso me gusta
-                    Query ultimaHijo = children.getRef().orderByKey().limitToLast(1);
-                    ultimaHijo.addValueEventListener(new ValueEventListener() {
+                    Log.d("TRANS", "Que dia " + children.getKey());
+                    children.getRef().orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot transporte : dataSnapshot.getChildren()) {
-                                Log.d("TRANS", "Tag del hijo " + transporte.getKey());
-                                //pon aqui lo que estabas haciendo
-                                DatabaseReference a = transporte.getRef();
-                                a.child("Coche").setValue("eeee");
 
+                            for (DataSnapshot children : dataSnapshot.getChildren()) {
 
+                                Log.d("TRANS", "Que hora " + children.getKey());
+                                if (children.getKey().equals("Transporte")) {
+
+                                    //Guarda valor si el usuario ha escrito alguna vez ese día
+                                    //Mir los datos que hay dentro de Transporte
+                                    children.getRef().addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot ds) {
+                                            for (DataSnapshot entrada : ds.getChildren()) {
+                                                Log.d("TRANS", "Dato enviado " + entrada.getKey() + " de " + entrada.getChildrenCount());
+
+                                                String transporte = entrada.getKey();
+                                                listaTotal.put(transporte, entrada.getChildrenCount());
+
+                                                if (entrada.child(userID).exists()) {
+                                                    guardadoTransporte = true;
+                                                    Log.d("TRANS", "Clickado y guardado transporte -> " + guardadoTransporte);
+                                                }
+                                            }
+                                            numTransporte = 0;
+                                            for (Map.Entry pair : listaTotal.entrySet()) {
+                                                numTransporte += (long) pair.getValue();
+                                            }
+                                            listaDeTrasnportes = new ArrayList<>();
+                                            listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", "Bici", controlErrorMap("Bici")));
+                                            listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", "Coche", controlErrorMap("Coche")));
+                                            listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", "Tpublico", controlErrorMap("Tpublico")));
+                                            listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", "Apie", controlErrorMap("Apie")));
+
+                                            recargarDatosBarraProgreso();
+                                        }
+
+                                        private int controlErrorMap(String keyMap) {
+                                            try {
+                                                return (int) ((listaTotal.get(keyMap) * 100) / numTransporte);
+                                            } catch (NullPointerException ex) {
+                                                return 0;
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError de) {
+                                            Toast.makeText(getView().getContext(), "Lectura de datos cancelada", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
                             }
+
                         }
 
                         @Override
@@ -85,53 +170,7 @@ public class fragment_transporte extends Fragment {
                         }
                     });
 
-                    ///////
-                    ///////
-                    ///////
-                    ///////
-                    ///////
-
-
-                    if (children.getKey().equals("Transporte")) {
-                        Log.d("DEBUG", "Es transporte");
-
-                        guardadoTransporte = children.child("Transporte/" + userID).exists();
-                        Log.d("DEBUG", "Clickado y guardado transporte -> " + guardadoTransporte);
-
-                        //Mir los datos que hay dentro de Transporte
-                        children.getRef().addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot ds) {
-                                for (DataSnapshot entrada : ds.getChildren()) {
-                                    String transporte = entrada.getValue(String.class);
-                                    if (listaTotal.containsKey(transporte)) {
-                                        listaTotal.put(transporte, (long) (listaTotal.get(transporte) + 1));
-                                    } else {
-                                        listaTotal.put(transporte, (long) 0);
-                                    }
-                                }
-                                for (Map.Entry pair : listaTotal.entrySet()) {
-                                    numTransporte += (long) pair.getValue();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError de) {
-                                Toast.makeText(getView().getContext(), "Lectura de datos cancelada", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                }
-
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", controlErrorMap("Bici")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", controlErrorMap("Coche")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", controlErrorMap("Tpublico")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", controlErrorMap("Apie")));
-            }
-
-            private long controlErrorMap(String keyMap) {
-
-                Log.d("DEBUG", "Dato subir " + keyMap);
+                Log.d("DEBUG", "Dato subir "+ keyMap);
                 try {
                     return convertDataToProgressData(listaTotal.get(keyMap));
                 } catch (NullPointerException ex) {
@@ -144,25 +183,21 @@ public class fragment_transporte extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
-    }
-
-    private long convertDataToProgressData(long numHave) {
-        return (numHave / numTransporte) * 100;
+        });*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("TRANS", "Fragment onCreateView");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_fragment_transporte, container, false);
 
         recyclerView = view.findViewById(R.id.recycledTransporte);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
-        adapterTransporte = new Trasnporte_Adapter(listaDeTrasnportes, guardadoTransporte);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapterTransporte);
+        recargarDatosBarraProgreso();
 
         return view;
     }
@@ -171,6 +206,12 @@ public class fragment_transporte extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
+            recargarDatosBarraProgreso();
         }
+    }
+
+    private void recargarDatosBarraProgreso() {
+        adapterTransporte = new Trasnporte_Adapter(listaDeTrasnportes, guardadoTransporte);
+        recyclerView.setAdapter(adapterTransporte);
     }
 }
