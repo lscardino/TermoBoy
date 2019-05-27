@@ -1,6 +1,7 @@
 package com.example.termoboy;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private ImageView imageView;
         private TextView mTextView;
         private ProgressBar mProgress;
+        private CardView mBgCard;
         private long numeroTransporte;
         private boolean mainClicked = false;
         private String transporteID;
@@ -64,6 +66,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             imageView = itemView.findViewById(R.id.imgtransporte);
             mTextView = itemView.findViewById(R.id.nombreTransporte);
             mProgress = itemView.findViewById(R.id.progressBar);
+            mBgCard = itemView.findViewById(R.id.BgCard);
 
             ThreadProgress thread = new ThreadProgress();
             thread.start();
@@ -94,6 +97,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             public void onClick(View v) {
                 if (!cliked) {
                     mainClicked = true;
+                    mBgCard.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
                     viewClicked();
 
                     Date date = new Date();
@@ -102,7 +106,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                     final String userID = mFirebaseAuth.getUid();
 
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
-                    final DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
+                    DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
 
                     //Guarda valor si el usuario ha escrito alguna vez ese día
 /*
@@ -154,7 +158,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                         }
                     });
                     try {
-                        Thread.sleep(3 + numProgress);
+                        Thread.sleep( numProgress/3);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

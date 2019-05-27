@@ -65,10 +65,11 @@ public class Bienvenido_Registro extends AppCompatActivity {
                 if (task.isSuccessful()){
                     //Todo guay
                     Log.d("DATOS","Usuario In");
+
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             }
         });
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
     public void mostrarPopUp() {

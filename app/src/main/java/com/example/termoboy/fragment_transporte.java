@@ -49,13 +49,15 @@ public class fragment_transporte extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
-        final String userID = mFirebaseAuth.getUid();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
         Query ultimaFecha = databaseReference.orderByKey().limitToLast(1);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth.getCurrentUser();
+        final String userID = mFirebaseAuth.getCurrentUser().getUid();
+        Log.d("TRANS", userID);
 
         //Peta si se quita el día y est adentro de la app
         databaseReference.child(dateFormat.format(new Date()) + "/Transporte").addValueEventListener(new ValueEventListener() {

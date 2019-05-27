@@ -1,15 +1,11 @@
 package com.example.termoboy;
 
-import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -188,14 +184,16 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         databaseReference = fireDataBase.getReference("Dia");
         Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
         //Query ultimaHora = ultimaFehca.orderByKey().limitToLast(1);
-
-        ultimaFehca.addValueEventListener(new ValueEventListener() {
+        Log.d("KEY", "Ultima Fecha " + ultimaFehca.getRef().getKey());
+        ultimaFehca.getRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("KEY: ", dataSnapshot.getKey());
+                //Ultima Hora
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+
                     Log.d("KEY HIJO PRINCIPAL", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
+                    Query ultimaHora = child.child("Hora").getRef().orderByKey().limitToLast(1);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -251,24 +249,24 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
                                         Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
-                                        String eee = Calculos.comoEstaElTiempoEh(lluvia,velViento,sensacionT,presion);
+                                        String eee = Calculos.comoEstaElTiempoEh(lluvia, velViento, sensacionT, presion);
 
-                                        Log.d("VALOR de eee: " , eee);
+                                        Log.d("VALOR de eee: ", eee);
 
                                         //Por alguna razo ensto no funcina -- era por el punto
                                         String[] todoSeparado = eee.split("-");
-                                        for (String aa:
-                                             todoSeparado) {
-                                            Log.d("VALOR elementosDARO: " , aa );
+                                        for (String aa :
+                                                todoSeparado) {
+                                            Log.d("VALOR elementosDARO: ", aa);
                                         }
 
-                                        String vehiculo = todoSeparado[todoSeparado.length-2];
-                                        String tiempo = todoSeparado[todoSeparado.length-1];
+                                        String vehiculo = todoSeparado[todoSeparado.length - 2];
+                                        String tiempo = todoSeparado[todoSeparado.length - 1];
                                         txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
 
-                                        Log.d("VALOR Vehiculo: ", vehiculo );
+                                        Log.d("VALOR Vehiculo: ", vehiculo);
 
-                                        Log.d("VALOR Icono: ", tiempo );
+                                        Log.d("VALOR Icono: ", tiempo);
 
 
 
@@ -305,7 +303,6 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
 
                                     }
-
                                 }
                             }
                         }
@@ -330,7 +327,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
 
     //Hace los calculas para saber que decirle al user, quizas sería menester poner esto en otra
-    //clase
+//clase
     public String estadoActual() {
         float presionF = Float.parseFloat(presion);
         float velVientoF = Float.parseFloat(velViento);
@@ -365,15 +362,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         if (tiempoNuevo.contains("lluvia") || tiempoNuevo.contains("gotas")
                 || tiempoNuevo.contains("lloviendo")
-                || tiempoNuevo.contains("llueve")){
+                || tiempoNuevo.contains("llueve")) {
             tiempoNuevo = "Lluvia";
-        }else if (tiempoNuevo.contains("HURACAN")){
+        } else if (tiempoNuevo.contains("HURACAN")) {
             tiempoNuevo = "HURACAN";
             //Huracan
-        }else if(tiempoNuevo.contains("vientos")){
+        } else if (tiempoNuevo.contains("vientos")) {
             tiempoNuevo = "Viento";
             //Viento
-        }else{
+        } else {
             tiempoNuevo = "Solete";
             //despejado
             //Hay que mirar lo de los lumnes aki y de hecho
