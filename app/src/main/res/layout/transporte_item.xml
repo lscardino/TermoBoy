@@ -15,20 +15,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
-
         <ImageView
             android:id="@+id/imgtransporte"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:padding="2dp" />
-
+            android:padding="2dp"/>
         <TextView
             android:id="@+id/nombreTransporte"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imgtransporte"
             android:text="Linea1"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -36,12 +35,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/nombreTransporte"
-            android:layout_marginRight="10dp"
             android:layout_toEndOf="@+id/imgtransporte"
             android:background="@android:color/transparent"
             android:backgroundTint="#F1ECEC"
             android:max="100"
-            android:progressTint="@color/design_default_color_primary_dark" />
+            android:progressBackgroundTint="@color/backgroundCBarraProg"
+            android:progressTint="@color/design_default_color_primary_dark"
+            android:layout_marginRight="10dp"/>
 
     </RelativeLayout>
     

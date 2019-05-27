@@ -1,6 +1,12 @@
 package com.example.termoboy;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -62,6 +68,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     String estadoACambiar;
     String luminosidadNueva;
 
+    int getUserEdat;
+    String getUserGenero;
+
 
     boolean primerChequeo;
 
@@ -91,6 +100,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     private FirebaseAuth mAuth;
     private FirebaseUser usuario;
 
+    SharedPreferences getPrefUser;
+
+
     public MenuPrincipalActivity() {
     }
 
@@ -106,10 +118,10 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         //Elementos del layout
         layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
         txtDia = view.findViewById(R.id.txtDia);
-        txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
         txtConsejo = view.findViewById(R.id.txtConsejo);
-        txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
-        txtNivelPolvo = view.findViewById(R.id.txtPolvo);
+       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+       // txtNivelPolvo = view.findViewById(R.id.txtPolvo);
         imgTiempo = view.findViewById(R.id.imgTiempoViejo);
         imgTiempoNuevo = view.findViewById(R.id.imgTiempoNuevo);
 
@@ -176,8 +188,13 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         usuario = mAuth.getCurrentUser();
 
         //Boton prueba a borrar
-        Button prueba = view.findViewById(R.id.btPrueba);
-        prueba.setOnClickListener(this);
+       // Button prueba = view.findViewById(R.id.btPrueba);
+        //prueba.setOnClickListener(this);
+
+        //Sharedpref
+        getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
+        getUserEdat = getPrefUser.getInt("edatUser",99);
+        getUserGenero = getPrefUser.getString("generoUser","none");
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
@@ -303,6 +320,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
 
                                     }
+
                                 }
                             }
                         }
@@ -327,7 +345,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
 
     //Hace los calculas para saber que decirle al user, quizas sería menester poner esto en otra
-//clase
+    //clase
     public String estadoActual() {
         float presionF = Float.parseFloat(presion);
         float velVientoF = Float.parseFloat(velViento);
@@ -362,15 +380,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         if (tiempoNuevo.contains("lluvia") || tiempoNuevo.contains("gotas")
                 || tiempoNuevo.contains("lloviendo")
-                || tiempoNuevo.contains("llueve")) {
+                || tiempoNuevo.contains("llueve")){
             tiempoNuevo = "Lluvia";
-        } else if (tiempoNuevo.contains("HURACAN")) {
+        }else if (tiempoNuevo.contains("HURACAN")){
             tiempoNuevo = "HURACAN";
             //Huracan
-        } else if (tiempoNuevo.contains("vientos")) {
+        }else if(tiempoNuevo.contains("vientos")){
             tiempoNuevo = "Viento";
             //Viento
-        } else {
+        }else{
             tiempoNuevo = "Solete";
             //despejado
             //Hay que mirar lo de los lumnes aki y de hecho
@@ -432,7 +450,8 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     public void onClick(View v) {
         Log.d("DATOS", "Clicl");
         databaseReference = fireDataBase.getReference("movidas");
-        databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
+        databaseReference.child("User/" + usuario.getUid() +"-"+ getUserGenero + "-" + getUserEdat)
+                .setValue("Buenas");
     }
 
     /*
