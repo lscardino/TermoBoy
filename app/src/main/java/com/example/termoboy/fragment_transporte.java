@@ -208,7 +208,7 @@ public class fragment_transporte extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            recargarDatosBarraProgreso();
+            //recargarDatosBarraProgreso();
         }
     }
 

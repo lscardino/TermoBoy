@@ -66,7 +66,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             imageView = itemView.findViewById(R.id.imgtransporte);
             mTextView = itemView.findViewById(R.id.nombreTransporte);
             mProgress = itemView.findViewById(R.id.progressBar);
-            mBgCard = itemView.findViewById(R.id.BgCard);
+            mBgCard = itemView.findViewById(R.id.cardviewItemsTrasnporte);
 
             ThreadProgress thread = new ThreadProgress();
             thread.start();
@@ -97,7 +97,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             public void onClick(View v) {
                 if (!cliked) {
                     mainClicked = true;
-                    mBgCard.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
+                    //mBgCard.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
                     viewClicked();
 
                     Date date = new Date();

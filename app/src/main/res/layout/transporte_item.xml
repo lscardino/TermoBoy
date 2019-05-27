@@ -6,6 +6,7 @@
     android:layout_marginBottom="30dp"
     android:layout_marginHorizontal="10dp"
     android:padding="5dp"
+    android:id="@+id/cardviewItemsTrasnporte"
     android:backgroundTint="@color/colorcarta"
     app:cardCornerRadius="20dp"
     >
