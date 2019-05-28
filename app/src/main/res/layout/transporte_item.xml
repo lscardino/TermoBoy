@@ -6,11 +6,13 @@
     android:layout_marginBottom="30dp"
     android:layout_marginHorizontal="10dp"
     android:padding="5dp"
+    android:id="@+id/cardviewItemsTrasnporte"
     android:backgroundTint="@color/colorcarta"
     app:cardCornerRadius="20dp"
     >
 
     <RelativeLayout
+        android:id="@+id/BgCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
@@ -22,8 +24,8 @@
         <TextView
             android:id="@+id/nombreTransporte"
             android:layout_width="wrap_content"
-            android:layout_toEndOf="@+id/imgtransporte"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgtransporte"
             android:text="Linea1"
             android:textSize="20dp"
             />
@@ -36,6 +38,7 @@
             android:layout_below="@+id/nombreTransporte"
             android:layout_toEndOf="@+id/imgtransporte"
             android:background="@android:color/transparent"
+            android:backgroundTint="#F1ECEC"
             android:max="100"
             android:progressBackgroundTint="@color/backgroundCBarraProg"
             android:progressTint="@color/design_default_color_primary_dark"

@@ -1,16 +1,27 @@
 package com.example.termoboy;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +34,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +57,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MenuPrincipalActivity extends Fragment implements OnClickListener {
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     LinearLayout layoutPrincipal;
     TextView txtTemp;
@@ -101,6 +122,16 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
     SharedPreferences getPrefUser;
 
+    private FusedLocationProviderClient client;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationManager mLocationManager;
+
+    private LocationRequest mLocationRequest;
+    private com.google.android.gms.location.LocationListener listener;
+    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+
 
     public MenuPrincipalActivity() {
     }
@@ -108,21 +139,19 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.activity_principal_menu, container, false);
 
-
         //Elementos del layout
         layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
         txtDia = view.findViewById(R.id.txtDia);
-       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
         txtConsejo = view.findViewById(R.id.txtConsejo);
-       // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
-       // txtNivelPolvo = view.findViewById(R.id.txtPolvo);
+        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+        // txtNivelPolvo = view.findViewById(R.id.txtPolvo);
         imgTiempo = view.findViewById(R.id.imgTiempoViejo);
         imgTiempoNuevo = view.findViewById(R.id.imgTiempoNuevo);
 
@@ -189,27 +218,36 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         usuario = mAuth.getCurrentUser();
 
         //Boton prueba a borrar
-       // Button prueba = view.findViewById(R.id.btPrueba);
+        // Button prueba = view.findViewById(R.id.btPrueba);
         //prueba.setOnClickListener(this);
+
+        //Pruebas api location
+        client = LocationServices.getFusedLocationProviderClient(getContext());
+
+        requestlocation();
+        pillarLocalizacion();
+
 
         //Sharedpref
         getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
-        getUserEdat = getPrefUser.getInt("edatUser",99);
-        getUserGenero = getPrefUser.getString("generoUser","none");
+        getUserEdat = getPrefUser.getInt("edatUser", 99);
+        getUserGenero = getPrefUser.getString("generoUser", "none");
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
         databaseReference = fireDataBase.getReference("Dia");
         Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
         //Query ultimaHora = ultimaFehca.orderByKey().limitToLast(1);
-
-        ultimaFehca.addValueEventListener(new ValueEventListener() {
+        Log.d("KEY", "Ultima Fecha " + ultimaFehca.getRef().getKey());
+        ultimaFehca.getRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("KEY: ", dataSnapshot.getKey());
+                //Ultima Hora
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+
                     Log.d("KEY HIJO PRINCIPAL", child.getKey());
-                    Query ultimaHora = child.getRef().orderByKey().limitToLast(2);
+                    Query ultimaHora = child.child("Hora").getRef().orderByKey().limitToLast(1);
                     ultimaHora.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -265,24 +303,24 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
                                         Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
-                                        String eee = Calculos.comoEstaElTiempoEh(lluvia,velViento,sensacionT,presion);
+                                        String eee = Calculos.comoEstaElTiempoEh(lluvia, velViento, sensacionT, presion);
 
-                                        Log.d("VALOR de eee: " , eee);
+                                        Log.d("VALOR de eee: ", eee);
 
                                         //Por alguna razo ensto no funcina -- era por el punto
                                         String[] todoSeparado = eee.split("-");
-                                        for (String aa:
-                                             todoSeparado) {
-                                            Log.d("VALOR elementosDARO: " , aa );
+                                        for (String aa :
+                                                todoSeparado) {
+                                            Log.d("VALOR elementosDARO: ", aa);
                                         }
 
-                                        String vehiculo = todoSeparado[todoSeparado.length-2];
-                                        String tiempo = todoSeparado[todoSeparado.length-1];
-                                        txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
+                                        String vehiculo = todoSeparado[todoSeparado.length - 2];
+                                        String tiempo = todoSeparado[todoSeparado.length - 1];
+                                        //txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
 
-                                        Log.d("VALOR Vehiculo: ", vehiculo );
+                                        Log.d("VALOR Vehiculo: ", vehiculo);
 
-                                        Log.d("VALOR Icono: ", tiempo );
+                                        Log.d("VALOR Icono: ", tiempo);
 
 
 
@@ -342,6 +380,33 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
         return view;
     }
 
+    //Quizas haya que poner getContext más que getActivity
+    private void pillarLocalizacion() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("LOCATION","No accedo localizacion");
+            return;
+        }
+        client.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    Log.d("LOCATION","La location NO es null");
+                    txtConsejo.setText(location.toString());
+                    Log.d("LOCATION","La location es " + location.toString());
+
+
+                }else{
+                    Log.d("LOCATION","La location es null");
+                }
+            }
+        });
+    }
+
+    private void requestlocation(){
+        ActivityCompat.requestPermissions(getActivity(),new String[]{ACCESS_FINE_LOCATION},1);
+    }
+
 
     //Hace los calculas para saber que decirle al user, quizas sería menester poner esto en otra
     //clase
@@ -379,15 +444,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
 
         if (tiempoNuevo.contains("lluvia") || tiempoNuevo.contains("gotas")
                 || tiempoNuevo.contains("lloviendo")
-                || tiempoNuevo.contains("llueve")){
+                || tiempoNuevo.contains("llueve")) {
             tiempoNuevo = "Lluvia";
-        }else if (tiempoNuevo.contains("HURACAN")){
+        } else if (tiempoNuevo.contains("HURACAN")) {
             tiempoNuevo = "HURACAN";
             //Huracan
-        }else if(tiempoNuevo.contains("vientos")){
+        } else if (tiempoNuevo.contains("vientos")) {
             tiempoNuevo = "Viento";
             //Viento
-        }else{
+        } else {
             tiempoNuevo = "Solete";
             //despejado
             //Hay que mirar lo de los lumnes aki y de hecho
@@ -448,15 +513,13 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener {
     @Override
     public void onClick(View v) {
         Log.d("DATOS", "Clicl");
-
-
         databaseReference = fireDataBase.getReference("movidas");
-        databaseReference.child("User/" + usuario.getUid() +"-"+ getUserGenero + "-" + getUserEdat)
+        databaseReference.child("User/" + usuario.getUid() + "-" + getUserGenero + "-" + getUserEdat)
                 .setValue("Buenas");
     }
 
 
-
+    //Locations
 
     /*
     public void cambiarFondo() {
