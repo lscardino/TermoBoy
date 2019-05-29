@@ -78,11 +78,14 @@ public class Bienvenido_Registro extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         //Todo guay
+                        currentUser = mAuth.getCurrentUser();
                         Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
                     }
+
                 }
             });
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
 
 
@@ -117,11 +120,14 @@ public class Bienvenido_Registro extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         //Todo guay
+                        currentUser = mAuth.getCurrentUser();
+
                         Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
                     }
                 }
             });
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }else{
             Toast.makeText(getApplicationContext(),"Por favor rellena todos los campos",
                     Toast.LENGTH_LONG).show();

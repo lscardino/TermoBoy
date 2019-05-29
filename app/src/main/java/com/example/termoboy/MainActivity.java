@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         useriario = mAuth.getCurrentUser();
-        Log.d("USER","ID USER " + useriario.getUid());
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
