@@ -12,12 +12,14 @@ import android.util.Log;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private FirebaseUser useriario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
             //Iniciar la actividá
             Log.d("DATOS","Usuario existe already");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        useriario = mAuth.getCurrentUser();
+        Log.d("USER","ID USER " + useriario.getUid());
     }
 
     private void setupViewPager(ViewPager viewPager) {

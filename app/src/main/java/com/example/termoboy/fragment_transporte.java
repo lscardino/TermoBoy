@@ -1,5 +1,7 @@
 package com.example.termoboy;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,10 +40,14 @@ public class fragment_transporte extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    SharedPreferences getUserUID;
+    String userIDString;
 
     private final HashMap<String, Long> listaTotal = new HashMap<>();
     private long numTransporte;
     private ArrayList<transporte_item> listaDeTrasnportes = new ArrayList<>();
+
+   String userID = "eee";
 
     public fragment_transporte() {
         // Required empty public constructor
@@ -55,9 +62,21 @@ public class fragment_transporte extends Fragment {
         Query ultimaFecha = databaseReference.orderByKey().limitToLast(1);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseAuth.getCurrentUser();
-        final String userID = mFirebaseAuth.getCurrentUser().getUid();
-        Log.d("TRANS", userID);
+        FirebaseUser usuario = mFirebaseAuth.getCurrentUser();
+
+        if (usuario!= null){
+            userID = usuario.getUid();
+
+        }
+
+        getUserUID = this.getActivity().getSharedPreferences("prefsUID", Context.MODE_PRIVATE);
+      //  userIDString = getUserUID.getString("Uid", "not tiene");
+            userIDString="f";
+
+
+
+       //mFirebaseAuth.getCurrentUser().getUid();
+        Log.d("TRANS", userIDString);
 
         //Peta si se quita el día y est adentro de la app
         databaseReference.child(dateFormat.format(new Date()) + "/Transporte").addValueEventListener(new ValueEventListener() {
@@ -69,7 +88,7 @@ public class fragment_transporte extends Fragment {
                     String transporte = entrada.getKey();
                     listaTotal.put(transporte, entrada.getChildrenCount());
 
-                    if (entrada.child(userID).exists()) {
+                    if (entrada.child(userIDString).exists()) {
                         guardadoTransporte = true;
                         Log.d("TRANS", "Clickado y guardado transporte -> " + guardadoTransporte);
                     }

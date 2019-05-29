@@ -42,7 +42,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -121,6 +124,9 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     private FirebaseUser usuario;
 
     SharedPreferences getPrefUser;
+    SharedPreferences recordarUID;
+
+    SharedPreferences.Editor editor;
 
     private FusedLocationProviderClient client;
     private GoogleApiClient mGoogleApiClient;
@@ -139,6 +145,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        usuario = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+
+        usuario = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -214,17 +229,34 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         primerChequeo = true;
 
         //User DB
-        mAuth = FirebaseAuth.getInstance();
-        usuario = mAuth.getCurrentUser();
+
+
+
+
+        /*
+        if (mAuth.getCurrentUser() != null){
+            //Iniciar la actividá
+            //Log.d("DATOS","Usuario existe already - id: " +  currentUser.getUid());
+            mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        //Todo guay
+                        Log.d("USERT", "MAIN Usuario In - id: " + usuario.getUid());
+                    }
+                }
+            });
+
+        }*/
 
         //Boton prueba a borrar
-        // Button prueba = view.findViewById(R.id.btPrueba);
-        //prueba.setOnClickListener(this);
+        Button prueba = view.findViewById(R.id.btPrueba);
+        prueba.setOnClickListener(this);
 
         //Pruebas api location
         client = LocationServices.getFusedLocationProviderClient(getContext());
 
-        requestlocation();
+       // requestlocation();
         pillarLocalizacion();
 
 
@@ -232,6 +264,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
         getUserEdat = getPrefUser.getInt("edatUser", 99);
         getUserGenero = getPrefUser.getString("generoUser", "none");
+
+        recordarUID = this.getActivity().getSharedPreferences("prefsUID", Context.MODE_PRIVATE);
+        editor = recordarUID.edit();
+        //editor.putString("Uid",usuario.getUid() + "-" + getUserEdat + "-" + getUserGenero);
+        //editor.putString("generoUser",datoSpinner);
+       // editor.apply();
+        //El de la uid
+
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
@@ -385,6 +425,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
         if (ActivityCompat.checkSelfPermission(getActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("LOCATION","No accedo localizacion");
+            //requestlocation();
             return;
         }
         client.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -392,7 +433,17 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
             public void onSuccess(Location location) {
                 if (location != null) {
                     Log.d("LOCATION","La location NO es null");
-                    txtConsejo.setText(location.toString());
+                    double latitud = location.getLatitude();
+                    double longitud = location.getLongitude();
+
+                    Location paco = new Location("nico");
+
+                    paco.setLatitude(41.569363);
+                    paco.setLongitude(1.995336);
+
+                    double dsitancia = location.distanceTo(paco);
+
+                    txtConsejo.setText("Distancia con el Nico " + dsitancia/1000 + "Km");
                     Log.d("LOCATION","La location es " + location.toString());
 
 
@@ -512,10 +563,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Log.d("DATOS", "Clicl");
-        databaseReference = fireDataBase.getReference("movidas");
-        databaseReference.child("User/" + usuario.getUid() + "-" + getUserGenero + "-" + getUserEdat)
-                .setValue("Buenas");
+        if (usuario != null) {
+            Log.d("DATOS", "Clicl userID : " + usuario.getUid().toString());
+            databaseReference = fireDataBase.getReference("movidas");
+            databaseReference.child("User/" + usuario.getUid() + "-" + getUserGenero + "-" + getUserEdat)
+                    .setValue("Buenas");
+        }else{
+            Log.d("DATOS", "Clicl userID : NO FUNCIONA");
+
+        }
     }
 
 
