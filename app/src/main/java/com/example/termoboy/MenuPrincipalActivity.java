@@ -88,6 +88,8 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     String lumens;
     String estadoInicial = "el cielo está despejado";
 
+    double distanciaHastaElNico = 0;
+
     String estadoACambiar;
     String iluminacionVieja = "el cielo está despejado";
     String iluminacionNueva;
@@ -240,7 +242,12 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         String vehiculo = todoSeparado[todoSeparado.length - 2];
                                         String tiempo = todoSeparado[todoSeparado.length - 1];
-                                        //txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
+
+                                        //Comprobación lógica, cruza la distqancia con el vehiculo que haya escogido, no te va a recomedar ir en bici si vives a 30 km
+                                        vehiculo = vivesToLejos(vehiculo);
+
+
+                                        txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
 
                                         Log.d("VALOR Vehiculo: ", vehiculo);
 
@@ -320,14 +327,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                     double latitud = location.getLatitude();
                     double longitud = location.getLongitude();
 
-                    Location paco = new Location("nico");
+                    Location instituto = new Location("nico");
 
-                    paco.setLatitude(41.569363);
-                    paco.setLongitude(1.995336);
+                    instituto.setLatitude(41.569363);
+                    instituto.setLongitude(1.995336);
 
-                    double dsitancia = location.distanceTo(paco);
+                    distanciaHastaElNico = location.distanceTo(instituto)/1000;
 
-                    txtConsejo.setText("Distancia con el Nico " + dsitancia/1000 + "Km");
+                    //txtConsejo.setText("Distancia con el Nico " + dsitancia/1000 + "Km");
                     Log.d("LOCATION","La location es " + location.toString());
 
 
@@ -373,6 +380,25 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         //limpiarBools(actual);
     }
 
+    private String vivesToLejos(String vehiculo){
+        switch (vehiculo){
+            case "venir en bici":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = "venir en coche";
+                }
+                break;
+            case "venir a pie":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = "venir en coche";
+                }else if(distanciaHastaElNico > 5){
+                    vehiculo = "venir en bici";
+                }
+                break;
+            default:
+                break;
+        }
+        return vehiculo;
+    }
 
     private void cambiarIcono(String tiempoNuevo) {
 
