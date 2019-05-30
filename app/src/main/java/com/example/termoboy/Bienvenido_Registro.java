@@ -6,19 +6,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -30,9 +26,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -44,6 +41,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private FirebaseDatabase firebaseDatabase;
 
     private SharedPreferences setDatosUser;
     private SharedPreferences.Editor editor;
@@ -71,9 +69,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-
-
-        if (mAuth.getCurrentUser() != null){
+        if (mAuth.getCurrentUser() != null) {
             //Iniciar la actividá
             //Log.d("DATOS","Usuario existe already - id: " +  currentUser.getUid());
             mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -105,61 +101,93 @@ public class Bienvenido_Registro extends AppCompatActivity {
 
     public void entrarApp(View view) {
         btnEntra.setEnabled(true);
-        if  (!edatUser.getText().toString().isEmpty()) {
+        if (!edatUser.getText().toString().isEmpty()) {
+            int edadUser = Integer.parseInt(edatUser.getText().toString());
+            if (edadUser < 0) {
+                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, Una edad no puede ser negativa.",
+                        Toast.LENGTH_LONG).show();
 
-            String datoSpinner = generoUser.getSelectedItem().toString();
-            Log.d("PREFS","Valor spinner " + datoSpinner);
+            } else if (edadUser <= 5) {
+                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, muy pequeño para usar la app.",
+                        Toast.LENGTH_LONG).show();
 
-            setDatosUser = getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
-            editor = setDatosUser.edit();
-            editor.putInt("edatUser",Integer.parseInt(edatUser.getText().toString()));
-            editor.putString("generoUser",datoSpinner);
-            editor.apply();
-            Log.d("PREFS",setDatosUser.getString("generoUser","mall"));
-            Log.d("PREFS",String.valueOf(setDatosUser.getInt("edatUser",33)));
+            } else if (edadUser >= 140) {
+                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, edad muy elevada.",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                String datoSpinner = generoUser.getSelectedItem().toString();
+                Log.d("PREFS", "Valor spinner " + datoSpinner);
 
+                setDatosUser = getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
+                editor = setDatosUser.edit();
+                editor.putInt("edatUser", edadUser);
+                editor.putString("generoUser", datoSpinner);
+                editor.apply();
+                Log.d("PREFS", setDatosUser.getString("generoUser", "mall"));
+                Log.d("PREFS", String.valueOf(setDatosUser.getInt("edatUser", 33)));
 
-            mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        //Todo guay
-                        currentUser = mAuth.getCurrentUser();
-
-                        Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
+                mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            //Todo guay
+                            subirUsuarioDatos();
+                        }
                     }
-                }
-            });
-        }else{
-            Toast.makeText(getApplicationContext(),"Por favor rellena todos los campos",
+                });
+            }
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Por favor rellena todos los campos",
                     Toast.LENGTH_LONG).show();
 
         }
         btnEntra.setEnabled(false);
     }
 
-    public void mostrarPopUp() {
-       FragmentoDialogoAviso a = new FragmentoDialogoAviso();
-       a.show(getSupportFragmentManager(),"ee");
+    private void subirUsuarioDatos() {
+        currentUser = mAuth.getCurrentUser();
+
+        Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        //Subir datos a FireBase
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        SharedPreferences getPrefUser = this.getApplication().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
+        int getUserEdat = getPrefUser.getInt("edatUser", 99);
+        String getUserGenero = getPrefUser.getString("generoUser", null);
+
+        HashMap<String, Object> datos = new HashMap<>();
+        datos.put("Edad", getUserEdat);
+        datos.put("Sexo", getUserGenero);
+
+        DatabaseReference databaseReference = firebaseDatabase.getReference("Usuario");
+
+        //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
+        databaseReference.child(currentUser.getUid()).updateChildren(datos);
     }
 
-    private void requestlocation(){
-        ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION},1);
+    public void mostrarPopUp() {
+        FragmentoDialogoAviso a = new FragmentoDialogoAviso();
+        a.show(getSupportFragmentManager(), "ee");
+    }
+
+    private void requestlocation() {
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
     private void pillarLocalizacion() {
 
         if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("LOCATION","No accedo localizacion");
+            Log.d("LOCATION", "No accedo localizacion");
             requestlocation();
         }
         client.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    Log.d("LOCATION","La location NO es null");
+                    Log.d("LOCATION", "La location NO es null");
                     double latitud = location.getLatitude();
                     double longitud = location.getLongitude();
 
@@ -170,11 +198,11 @@ public class Bienvenido_Registro extends AppCompatActivity {
 
                     double dsitancia = location.distanceTo(paco);
 
-                    Log.d("LOCATION","dsitancia total " + dsitancia/1000 + "Km");
+                    Log.d("LOCATION", "dsitancia total " + dsitancia / 1000 + "Km");
 
 
-                }else{
-                    Log.d("LOCATION","La location es null");
+                } else {
+                    Log.d("LOCATION", "La location es null");
                 }
             }
         });

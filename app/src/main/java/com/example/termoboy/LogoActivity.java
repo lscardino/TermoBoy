@@ -25,7 +25,7 @@ public class LogoActivity extends AppCompatActivity {
 */
         btnSkip = findViewById(R.id.btn_Skip);
         btnSkip.setText(Integer.toString(CONTADOR));
-        btnSkip.setBackground(getDrawable(R.drawable.ic_arrow_forward_black_24dp));
+        //btnSkip.setBackground(getDrawable(R.drawable.ic_arrow_forward_black_24dp));
 
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
