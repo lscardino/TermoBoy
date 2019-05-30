@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -37,14 +38,15 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class Bienvenido_Registro extends AppCompatActivity {
 
-    Spinner generoUser;
-    EditText edatUser;
+    private Spinner generoUser;
+    private EditText edatUser;
+    private Button btnEntra;
 
     private FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    private FirebaseUser currentUser;
 
-    SharedPreferences setDatosUser;
-    SharedPreferences.Editor editor;
+    private SharedPreferences setDatosUser;
+    private SharedPreferences.Editor editor;
 
     private FusedLocationProviderClient client;
 
@@ -57,6 +59,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
 
         edatUser = findViewById(R.id.etxtEdat);
         generoUser = findViewById(R.id.spinnerGenero);
+        btnEntra = findViewById(R.id.btnEntra);
         LinearLayout layoutprincipal = findViewById(R.id.layoutrootBienvenida);
 
         AnimationDrawable animationDrawable = (AnimationDrawable) layoutprincipal.getBackground();
@@ -101,6 +104,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
     }
 
     public void entrarApp(View view) {
+        btnEntra.setEnabled(true);
         if  (!edatUser.getText().toString().isEmpty()) {
 
             String datoSpinner = generoUser.getSelectedItem().toString();
@@ -133,6 +137,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
 
         }
+        btnEntra.setEnabled(false);
     }
 
     public void mostrarPopUp() {

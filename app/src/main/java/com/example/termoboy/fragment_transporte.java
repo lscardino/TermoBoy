@@ -1,9 +1,8 @@
 package com.example.termoboy;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,20 +33,17 @@ public class fragment_transporte extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapterTransporte;
     private RecyclerView.LayoutManager layoutManager;
-    private boolean guardadoTransporte = false;
+    private String guardadoTransporte = null;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    SharedPreferences getUserUID;
-    String userIDString;
+    String userIDString = "ERROR";
 
-    private final HashMap<String, Long> listaTotal = new HashMap<>();
+    private HashMap<String, Long> listaTotal = new HashMap<>();
     private long numTransporte;
     private ArrayList<transporte_item> listaDeTrasnportes = new ArrayList<>();
-
-   String userID = "eee";
 
     public fragment_transporte() {
         // Required empty public constructor
@@ -64,24 +60,20 @@ public class fragment_transporte extends Fragment {
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser usuario = mFirebaseAuth.getCurrentUser();
 
-        if (usuario!= null){
-            userID = usuario.getUid();
-
+        if (usuario != null) {
+            userIDString = usuario.getUid();
         }
-
-        getUserUID = this.getActivity().getSharedPreferences("prefsUID", Context.MODE_PRIVATE);
-      //  userIDString = getUserUID.getString("Uid", "not tiene");
-            userIDString="f";
-
-
-
-       //mFirebaseAuth.getCurrentUser().getUid();
         Log.d("TRANS", userIDString);
 
+        MiraHoraInternet horaInternetURL = new MiraHoraInternet();
+        String fFechaInternet = horaInternetURL.getDate();
+        Log.d("TRANS tiempo URL", fFechaInternet );
+
         //Peta si se quita el día y est adentro de la app
-        databaseReference.child(dateFormat.format(new Date()) + "/Transporte").addValueEventListener(new ValueEventListener() {
+        databaseReference.child(fFechaInternet + "/Transporte").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaTotal = new HashMap<>();
                 for (DataSnapshot entrada : dataSnapshot.getChildren()) {
                     Log.d("TRANS", "Dato enviado " + entrada.getKey() + " de " + entrada.getChildrenCount());
 
@@ -89,7 +81,7 @@ public class fragment_transporte extends Fragment {
                     listaTotal.put(transporte, entrada.getChildrenCount());
 
                     if (entrada.child(userIDString).exists()) {
-                        guardadoTransporte = true;
+                        guardadoTransporte = entrada.getKey().toString();
                         Log.d("TRANS", "Clickado y guardado transporte -> " + guardadoTransporte);
                     }
                 }
@@ -97,21 +89,7 @@ public class fragment_transporte extends Fragment {
                 for (Map.Entry pair : listaTotal.entrySet()) {
                     numTransporte += (long) pair.getValue();
                 }
-                listaDeTrasnportes = new ArrayList<>();
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", "Bici", controlErrorMap("Bici")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", "Coche", controlErrorMap("Coche")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", "Tpublico", controlErrorMap("Tpublico")));
-                listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", "Apie", controlErrorMap("Apie")));
-
                 recargarDatosBarraProgreso();
-            }
-
-            private int controlErrorMap(String keyMap) {
-                try {
-                    return (int) ((listaTotal.get(keyMap) * 100) / numTransporte);
-                } catch (NullPointerException ex) {
-                    return 0;
-                }
             }
 
             @Override
@@ -207,10 +185,17 @@ public class fragment_transporte extends Fragment {
         });*/
     }
 
+    private int controlErrorMap(String keyMap) {
+        try {
+            return (int) ((listaTotal.get(keyMap) * 100) / numTransporte);
+        } catch (NullPointerException ex) {
+            return 0;
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("TRANS", "Fragment onCreateView");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_fragment_transporte, container, false);
 
@@ -218,7 +203,7 @@ public class fragment_transporte extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recargarDatosBarraProgreso();
+        //recargarDatosBarraProgreso();
 
         return view;
     }
@@ -227,11 +212,18 @@ public class fragment_transporte extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            //recargarDatosBarraProgreso();
+            recargarDatosBarraProgreso();
         }
     }
 
     private void recargarDatosBarraProgreso() {
+
+        listaDeTrasnportes = new ArrayList<>();
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", "Bici", controlErrorMap("Bici")));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", "Coche", controlErrorMap("Coche")));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_tren, "Transporte Público", "Tpublico", controlErrorMap("Tpublico")));
+        listaDeTrasnportes.add(new transporte_item(R.drawable.ic_apie, "Caminando", "Apie", controlErrorMap("Apie")));
+
         adapterTransporte = new Trasnporte_Adapter(listaDeTrasnportes, guardadoTransporte);
         recyclerView.setAdapter(adapterTransporte);
     }

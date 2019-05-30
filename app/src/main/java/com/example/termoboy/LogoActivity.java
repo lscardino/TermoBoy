@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LogoActivity extends AppCompatActivity {
 
     private Button btnSkip;
-    private int CONTADOR = 3;
+    private final int CONTADOR = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

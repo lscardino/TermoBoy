@@ -99,14 +99,16 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
+
         <Button
+            android:id="@+id/btnEntra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="entrarApp"
             android:background="@drawable/boton_redondo"
+            android:onClick="entrarApp"
             android:text="Entrar"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent" />
     </LinearLayout>
 
 </LinearLayout>

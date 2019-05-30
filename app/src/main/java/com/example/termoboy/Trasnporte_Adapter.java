@@ -10,20 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -31,13 +23,13 @@ import java.util.concurrent.CountDownLatch;
 public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.TransporteViewHolder> {
 
     private ArrayList<transporte_item> listaTransportesA;
-    private boolean cliked = false;
+    private String cliked = null;
     private Object sincronizedObj = new Object();
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
 
-    public Trasnporte_Adapter(ArrayList<transporte_item> listaTransportesA, boolean mClicked) {
+    public Trasnporte_Adapter(ArrayList<transporte_item> listaTransportesA, String mClicked) {
         this.listaTransportesA = listaTransportesA;
         this.cliked = mClicked;
     }
@@ -59,6 +51,8 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private long numeroTransporte;
         private boolean mainClicked = false;
         private String transporteID;
+        private Map<String, Object> datoSubir;
+        private CountDownLatch downLatch;
         //Faltaria lo de la barra de progreso
 
         public TransporteViewHolder(@NonNull final View itemView) {
@@ -68,21 +62,27 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             mProgress = itemView.findViewById(R.id.progressBar);
             mBgCard = itemView.findViewById(R.id.cardviewItemsTrasnporte);
 
-            ThreadProgress thread = new ThreadProgress();
+            downLatch = new CountDownLatch(1);
+            ThreadProgress thread = new ThreadProgress(downLatch);
             thread.start();
 
             itemView.setOnClickListener(new ListenerClick());
 
-            if (cliked) {
+            try {
+                downLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (cliked != null) {
                 viewClicked();
             }
         }
 
         private void viewClicked() {
             synchronized (sincronizedObj) {
-                cliked = true;
+                cliked = transporteID;
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -90,20 +90,22 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             }
         }
 
-        class ListenerClick implements View.OnClickListener{
+        class ListenerClick implements View.OnClickListener {
 
-            private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             @Override
             public void onClick(View v) {
-                if (!cliked) {
+                if (cliked == null) {
                     mainClicked = true;
                     //mBgCard.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
+                    numeroTransporte ++;
                     viewClicked();
 
-                    Date date = new Date();
                     mFirebaseAuth = FirebaseAuth.getInstance();
 
                     final String userID = mFirebaseAuth.getUid();
+
+                    datoSubir = new HashMap<>();
+                    datoSubir.put(userID, "Ha votado");
 
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference databaseReference = mFirebaseDatabase.getReference("Dia");
@@ -112,28 +114,35 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
 /*
                                                 DatabaseReference a = transporte.getRef();
                                                 a.child("Coche").setValue("eeee");*/
-                    Map<String, Object> dato = new HashMap<>();
-                    dato.put(userID,"");
+
+                    MiraHoraInternet horaInternetURL = new MiraHoraInternet();
+                    String fFechaInternet = horaInternetURL.getDate();
+                    Log.d("ADAPTER ", fFechaInternet);
 
                     //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
-                    databaseReference.child(dateFormat.format(date)+"/Transporte/"+transporteID).updateChildren(dato);
+                    databaseReference.child( fFechaInternet + "/Transporte").child(transporteID).updateChildren(datoSubir);
                 }
             }
         }
 
         class ThreadProgress extends Thread {
+            private CountDownLatch downLatch;
 
+            ThreadProgress(CountDownLatch latch){
+                this.downLatch = latch;
+            }
             @Override
             public void run() {
                 synchronized (sincronizedObj) {
                     try {
+                        downLatch.countDown();
                         sincronizedObj.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                if (!mainClicked) {
+                if (!mainClicked && cliked == null) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -158,7 +167,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                         }
                     });
                     try {
-                        Thread.sleep( numProgress/3);
+                        Thread.sleep(numProgress / 3);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -178,7 +187,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         transporteViewHolder.numeroTransporte = currentItem.gettransporteCantidad();
         transporteViewHolder.transporteID = currentItem.getTransporteID();
         transporteViewHolder.mProgress.setMax(100);
-        if(!this.cliked){
+        if (this.cliked == null) {
             transporteViewHolder.mProgress.setVisibility(View.INVISIBLE);
         }
     }

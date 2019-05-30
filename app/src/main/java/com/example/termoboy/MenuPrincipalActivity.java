@@ -279,7 +279,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
         //Query ultimaHora = ultimaFehca.orderByKey().limitToLast(1);
         Log.d("KEY", "Ultima Fecha " + ultimaFehca.getRef().getKey());
-        ultimaFehca.getRef().addValueEventListener(new ValueEventListener() {
+        ultimaFehca.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("KEY: ", dataSnapshot.getKey());
