@@ -70,7 +70,7 @@ public class fragment_transporte extends Fragment {
         Log.d("TRANS tiempo URL", fFechaInternet );
 
         //Peta si se quita el día y est adentro de la app
-        databaseReference.child(fFechaInternet + "/Transporte").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(fFechaInternet + "/Transporte").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaTotal = new HashMap<>();

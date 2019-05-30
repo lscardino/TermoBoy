@@ -47,7 +47,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private ImageView imageView;
         private TextView mTextView;
         private ProgressBar mProgress;
-        private CardView mBgCard;
+        private CardView mBgCardView;
         private long numeroTransporte;
         private boolean mainClicked = false;
         private String transporteID;
@@ -60,27 +60,28 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             imageView = itemView.findViewById(R.id.imgtransporte);
             mTextView = itemView.findViewById(R.id.nombreTransporte);
             mProgress = itemView.findViewById(R.id.progressBar);
-            mBgCard = itemView.findViewById(R.id.cardviewItemsTrasnporte);
+            mBgCardView = itemView.findViewById(R.id.cardviewItemsTrasnporte);
 
             downLatch = new CountDownLatch(1);
             ThreadProgress thread = new ThreadProgress(downLatch);
             thread.start();
-
-            itemView.setOnClickListener(new ListenerClick());
 
             try {
                 downLatch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            //Para ver si fue Clicado antes
             if (cliked != null) {
                 viewClicked();
+            } else {
+                itemView.setOnClickListener(new ListenerClick());
             }
+
         }
 
         private void viewClicked() {
             synchronized (sincronizedObj) {
-                cliked = transporteID;
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -88,16 +89,19 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                 }
                 sincronizedObj.notifyAll();
             }
+            if (cliked.equals(transporteID)) {
+                //mBgCardView.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
+            }
         }
 
-        class ListenerClick implements View.OnClickListener {
+        private class ListenerClick implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
                 if (cliked == null) {
                     mainClicked = true;
-                    //mBgCard.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
-                    numeroTransporte ++;
+                    numeroTransporte++;
+                    cliked = transporteID;
                     viewClicked();
 
                     mFirebaseAuth = FirebaseAuth.getInstance();
@@ -120,15 +124,15 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                     Log.d("ADAPTER ", fFechaInternet);
 
                     //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
-                    databaseReference.child( fFechaInternet + "/Transporte").child(transporteID).updateChildren(datoSubir);
+                    databaseReference.child(fFechaInternet + "/Transporte").child(transporteID).updateChildren(datoSubir);
                 }
             }
         }
 
-        class ThreadProgress extends Thread {
+        private class ThreadProgress extends Thread {
             private CountDownLatch downLatch;
 
-            ThreadProgress(CountDownLatch latch){
+            ThreadProgress(CountDownLatch latch) {
                 this.downLatch = latch;
             }
             @Override
