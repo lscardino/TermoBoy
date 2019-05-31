@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +45,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         useriario = mAuth.getCurrentUser();
+    }
 
+    @Override
+    public void onBackPressed() {
+        new FragmentDialogSalir().show(getSupportFragmentManager(),"INFO - Salir App");
     }
 
     private void setupViewPager(ViewPager viewPager) {

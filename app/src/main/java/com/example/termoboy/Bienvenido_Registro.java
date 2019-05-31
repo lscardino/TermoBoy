@@ -41,7 +41,6 @@ public class Bienvenido_Registro extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private FirebaseDatabase firebaseDatabase;
 
     private SharedPreferences setDatosUser;
     private SharedPreferences.Editor editor;
@@ -80,9 +79,8 @@ public class Bienvenido_Registro extends AppCompatActivity {
                         currentUser = mAuth.getCurrentUser();
                         Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
+                        finish();
                     }
-
                 }
             });
         }
@@ -99,8 +97,13 @@ public class Bienvenido_Registro extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
     }
 
+    @Override
+    public void onBackPressed() {
+        //No vuelve
+    }
+
     public void entrarApp(View view) {
-        btnEntra.setEnabled(true);
+        btnEntra.setEnabled(false);
         if (!edatUser.getText().toString().isEmpty()) {
             int edadUser = Integer.parseInt(edatUser.getText().toString());
             if (edadUser < 0) {
@@ -126,46 +129,14 @@ public class Bienvenido_Registro extends AppCompatActivity {
                 Log.d("PREFS", setDatosUser.getString("generoUser", "mall"));
                 Log.d("PREFS", String.valueOf(setDatosUser.getInt("edatUser", 33)));
 
-                mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //Todo guay
-                            subirUsuarioDatos();
-                        }
-                    }
-                });
+                mAuth.signInAnonymously().addOnCompleteListener(this,new ListenerCrearUsuario(this));
             }
 
         } else {
             Toast.makeText(getApplicationContext(), "Por favor rellena todos los campos",
                     Toast.LENGTH_LONG).show();
-
         }
-        btnEntra.setEnabled(false);
-    }
-
-    private void subirUsuarioDatos() {
-        currentUser = mAuth.getCurrentUser();
-
-        Log.d("DATOS", "Usuario In - id: " + currentUser.getUid());
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        //Subir datos a FireBase
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-
-        SharedPreferences getPrefUser = this.getApplication().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
-        int getUserEdat = getPrefUser.getInt("edatUser", 99);
-        String getUserGenero = getPrefUser.getString("generoUser", null);
-
-        HashMap<String, Object> datos = new HashMap<>();
-        datos.put("Edad", getUserEdat);
-        datos.put("Sexo", getUserGenero);
-
-        DatabaseReference databaseReference = firebaseDatabase.getReference("Usuario");
-
-        //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
-        databaseReference.child(currentUser.getUid()).updateChildren(datos);
+        btnEntra.setEnabled(true);
     }
 
     public void mostrarPopUp() {

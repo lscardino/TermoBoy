@@ -45,6 +45,11 @@ public class LogoActivity extends AppCompatActivity {
         new ThreadContador().start();
     }
 
+    @Override
+    public void onBackPressed() {
+        //No vuelve
+    }
+
     private FirebaseAuth mAuth;
     private void siguentePantalla(){
 

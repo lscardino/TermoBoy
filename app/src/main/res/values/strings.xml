@@ -8,6 +8,7 @@
     un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,
     esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor
     experiencia a los usuarios.</string>
+    <string name="popUpSalir">De verdad desea salir?</string>
     <string-array name="itemsGenero">
         <item>Hombre</item>
         <item>Mujer</item>
