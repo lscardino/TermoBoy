@@ -30,28 +30,14 @@ public class Calculos {
         float luxesF = Float.parseFloat(luxes);
         String luminosidadActual = "";
 
-        if (luxesF >= 40) {
+        if (luxesF <= 40) {
             luminosidadActual = "Noche";
+        } else if (luxesF <= 2000){
+            luminosidadActual = "Nublado";
         } else {
-            luminosidadActual = "Dia";
+            luminosidadActual = "el cielo está despejado";
         }
 
-        /*
-        if (luxesF >= 100000) {
-            luminosidadActual = "Muy iluminado";
-        } else if (luxesF >= 10000) {
-            //Esto es un día nublado o el medio dia
-            luminosidadActual = "Nublado";
-        } else if (luxesF >= 400) {
-            //Tormenta o dia lluvioso
-            luminosidadActual = "Oscuro";
-        } else if (luxesF >= 40) {
-            //muy nublado
-            luminosidadActual = "Muy oscuro";
-        } else {
-            luminosidadActual = "Noche";
-        }
-        */
         return luminosidadActual;
     }
 

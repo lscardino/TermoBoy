@@ -85,11 +85,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     String lluvia;
     String polvo;
     String sensacionT;
-    String estadoInicial = "Soleado";
-    String luminosidadInicial = "Dia";
+    String lumens;
+    String estadoInicial = "el cielo está despejado";
+
+    double distanciaHastaElNico = 0;
 
     String estadoACambiar;
-    String luminosidadNueva;
+    String iluminacionVieja = "el cielo está despejado";
+    String iluminacionNueva;
 
     int getUserEdat;
     String getUserGenero;
@@ -160,124 +163,26 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.activity_principal_menu, container, false);
 
-        //Elementos del layout
-        layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
-        txtDia = view.findViewById(R.id.txtDia);
-        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
-        txtConsejo = view.findViewById(R.id.txtConsejo);
-        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
-        // txtNivelPolvo = view.findViewById(R.id.txtPolvo);
-        imgTiempo = view.findViewById(R.id.imgTiempoViejo);
-        imgTiempoNuevo = view.findViewById(R.id.imgTiempoNuevo);
+        iniciarElementos(view);
+        listasIniciales(view);
 
-        imgTiempo.bringToFront();
-
-        //Animaciones
-        transicionFondo = (TransitionDrawable) layoutPrincipal.getBackground();
-        //transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
-        fadeOut = AnimationUtils.loadAnimation(view.getContext()
-                , R.anim.fadeout);
-        fadeIn = AnimationUtils.loadAnimation(view.getContext()
-                , R.anim.fadein);
-
-
-        //DATE y TIME's
-        DateFormat df = new DateFormat();
-        fecha = df.format("dd-MM", new Date()).toString();
-        txtDia.setText(fecha);
-
-        //Arrays y listas
-        actualWeather = new HashMap<>();
-        actualWeather.put("Soleado", false);
-        actualWeather.put("Nublado", false);
-        actualWeather.put("Ventoso", false);
-        actualWeather.put("Lloviendo", false);
-
-        listaDeDatosIzquierda = new ArrayList<>();
-        listaDeDatosIzquierda.add(new Datos_item("TEMP", "30", "ºC"));
-        listaDeDatosIzquierda.add(new Datos_item("%HUM", "45", "%"));
-        listaDeDatosIzquierda.add(new Datos_item("LLUV", "0", "mm3"));
-
-        listaDeDatosDerecha = new ArrayList<>();
-        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", "20", "Km/H"));
-        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", "23", "ºC"));
-        listaDeDatosDerecha.add(new Datos_item("PRES", "34", "Atm"));
-
-        //txtConsejo.setText("Hace un día estupendo para ir en bici!");
-
-        //Recycled views
-        recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
-        recyclerViewIZ.setHasFixedSize(true);
-        layoutManagerIZ = new LinearLayoutManager(view.getContext());
-        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
-        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
-        recyclerViewIZ.setAdapter(adapterIZ);
-
-
-        recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
-        recyclerViewDR.setHasFixedSize(true);
-        layoutManagerDR = new LinearLayoutManager(view.getContext());
-        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
-        recyclerViewDR.setLayoutManager(layoutManagerDR);
-        recyclerViewDR.setAdapter(adapterDR);
-
-        //Primitivos
-        //quizás esto habrái que guardarlo en otra parte...
-        //Y de hecho, una vez tengamos lo de los lumens, esto será innecesario -
-        //El fondo se cambiará en otro metodo ya que depende de variables difernetes
-        //a aquellas que controlan los iconos.
-        primerChequeo = true;
-
-        //User DB
-
-
-
-
-        /*
-        if (mAuth.getCurrentUser() != null){
-            //Iniciar la actividá
-            //Log.d("DATOS","Usuario existe already - id: " +  currentUser.getUid());
-            mAuth.signInAnonymously().addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        //Todo guay
-                        Log.d("USERT", "MAIN Usuario In - id: " + usuario.getUid());
-                    }
-                }
-            });
-
-        }*/
-
-        //Boton prueba a borrar
-        Button prueba = view.findViewById(R.id.btPrueba);
-        prueba.setOnClickListener(this);
-
-        //Pruebas api location
-        client = LocationServices.getFusedLocationProviderClient(getContext());
-
-       // requestlocation();
         pillarLocalizacion();
+        lasSharedPref(view);
+
+        leerFirebase(view);
 
 
-        //Sharedpref
-        getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
-        getUserEdat = getPrefUser.getInt("edatUser", 99);
-        getUserGenero = getPrefUser.getString("generoUser", "none");
+        return view;
+    }
 
-        recordarUID = this.getActivity().getSharedPreferences("prefsUID", Context.MODE_PRIVATE);
-        editor = recordarUID.edit();
-        //editor.putString("Uid",usuario.getUid() + "-" + getUserEdat + "-" + getUserGenero);
-        //editor.putString("generoUser",datoSpinner);
-       // editor.apply();
-        //El de la uid
-
+    private void leerFirebase(final View view) {
 
         //Conexión Firebase
         fireDataBase = FirebaseDatabase.getInstance();
         databaseReference = fireDataBase.getReference("Dia");
         Query ultimaFehca = databaseReference.orderByKey().limitToLast(1);
-        //Query ultimaHora = ultimaFehca.orderByKey().limitToLast(1);
+
+
         Log.d("KEY", "Ultima Fecha " + ultimaFehca.getRef().getKey());
         ultimaFehca.addValueEventListener(new ValueEventListener() {
             @Override
@@ -312,33 +217,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         //Abajo
                                         polvo = child.child("Polvo").getValue().toString();
-                                        //
+                                        txtNivelPolvo.setText("Nivel de polvo: " + polvo);
 
-                                        listaDeDatosIzquierda.clear();
-                                        listaDeDatosIzquierda.add(new Datos_item("TEMP.", temeratura, "ºC"));
-                                        listaDeDatosIzquierda.add(new Datos_item("%HUM.", humedad, "%"));
-                                        listaDeDatosIzquierda.add(new Datos_item("LLUV.", lluvia, "mm/h"));
+                                        //Lumens
+                                        lumens = child.child("Lumens").getValue().toString();
 
-                                        listaDeDatosDerecha.clear();
-                                        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", velViento, "Km/H"));
-                                        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", sensacionT, "ºC"));
-                                        listaDeDatosDerecha.add(new Datos_item("PRES.", presion, "Pa"));
+                                        actualizarDatos(view);
 
 
-                                        recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
-                                        recyclerViewIZ.setHasFixedSize(true);
-                                        layoutManagerIZ = new LinearLayoutManager(view.getContext());
-                                        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
-                                        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
-                                        recyclerViewIZ.setAdapter(adapterIZ);
-
-
-                                        recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
-                                        recyclerViewDR.setHasFixedSize(true);
-                                        layoutManagerDR = new LinearLayoutManager(view.getContext());
-                                        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
-                                        recyclerViewDR.setLayoutManager(layoutManagerDR);
-                                        recyclerViewDR.setAdapter(adapterDR);
 
 
                                         Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
@@ -356,7 +242,12 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         String vehiculo = todoSeparado[todoSeparado.length - 2];
                                         String tiempo = todoSeparado[todoSeparado.length - 1];
-                                        //txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
+
+                                        //Comprobación lógica, cruza la distqancia con el vehiculo que haya escogido, no te va a recomedar ir en bici si vives a 30 km
+                                        vehiculo = vivesToLejos(vehiculo);
+
+
+                                        txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
 
                                         Log.d("VALOR Vehiculo: ", vehiculo);
 
@@ -364,37 +255,38 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
 
 
-
-                                        /*
-                                        if (tiempo.contains("lluvia") || tiempo.contains("gotas")
-                                                || tiempo.contains("lloviendo")
-                                                || tiempo.contains("llueve")){
-                                            //Icono de lluvia
-                                        }else if (tiempo.contains("HURACAN")){
-                                            //Huracan
-                                        }else if(tiempo.contains("vientos")){
-                                            //Viento
-                                        }else{
-                                            //despejado
-                                            //Hay que mirar lo de los lumnes aki y de hecho
-                                            //Cambiar el icono tmb
-                                        }
-                                         */
-                                        //Lo primero, el fondo.
-                                        //Cuando tengamos lo de lso lumens.
-                                        //luminosidadNueva = Calculos.devolverLuminosidad(lumens);
-
-                                        //cambiarIcono(tiempo);
-                                        //Cambiar la funcion estado actual para qeu haga las movidas chungas de calculos.
                                         estadoACambiar = tiempo;
+                                        iluminacionNueva = Calculos.devolverLuminosidad(lumens);
                                         if (!estadoACambiar.equals(estadoInicial)) {
-                                            cambiarIcono(estadoACambiar);
-                                            estadoInicial = estadoACambiar;
+                                            if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)< 40) {
+                                                cambiarIcono("Noche");
+                                                estadoInicial = "Noche";
+                                                // Y la luminosidad está baja - pon una luna
+                                            }else {
+                                                cambiarIcono(estadoACambiar);
+                                                estadoInicial = estadoACambiar;
+                                            }
 
                                         } else {
                                             //Los iconos se quedan igual
                                         }
 
+
+                                        if (!iluminacionNueva.equals(iluminacionVieja)) {
+                                            //la iluminacion es difernete
+                                            //DEberias
+                                            cambiarFondo(iluminacionVieja,iluminacionNueva);
+                                            if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)< 40) {
+                                                cambiarIcono("Noche");
+                                                estadoInicial = "Noche";
+                                            }else if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)<= 2000){
+                                                cambiarIcono("Nublado");
+                                                estadoInicial = "Nublado";
+                                            }
+
+                                            iluminacionVieja = iluminacionNueva;
+
+                                        }
 
                                     }
 
@@ -416,12 +308,11 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
             }
         });
 
-
-        return view;
     }
 
     //Quizas haya que poner getContext más que getActivity
     private void pillarLocalizacion() {
+        client = LocationServices.getFusedLocationProviderClient(getContext());
 
         if (ActivityCompat.checkSelfPermission(getActivity(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("LOCATION","No accedo localizacion");
@@ -436,14 +327,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                     double latitud = location.getLatitude();
                     double longitud = location.getLongitude();
 
-                    Location paco = new Location("nico");
+                    Location instituto = new Location("nico");
 
-                    paco.setLatitude(41.569363);
-                    paco.setLongitude(1.995336);
+                    instituto.setLatitude(41.569363);
+                    instituto.setLongitude(1.995336);
 
-                    double dsitancia = location.distanceTo(paco);
+                    distanciaHastaElNico = location.distanceTo(instituto)/1000;
 
-                    txtConsejo.setText("Distancia con el Nico " + dsitancia/1000 + "Km");
+                    //txtConsejo.setText("Distancia con el Nico " + dsitancia/1000 + "Km");
                     Log.d("LOCATION","La location es " + location.toString());
 
 
@@ -489,6 +380,25 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         //limpiarBools(actual);
     }
 
+    private String vivesToLejos(String vehiculo){
+        switch (vehiculo){
+            case "venir en bici":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = "venir en coche";
+                }
+                break;
+            case "venir a pie":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = "venir en coche";
+                }else if(distanciaHastaElNico > 5){
+                    vehiculo = "venir en bici";
+                }
+                break;
+            default:
+                break;
+        }
+        return vehiculo;
+    }
 
     private void cambiarIcono(String tiempoNuevo) {
 
@@ -503,8 +413,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         } else if (tiempoNuevo.contains("vientos")) {
             tiempoNuevo = "Viento";
             //Viento
-        } else {
-            tiempoNuevo = "Solete";
+        } else if(tiempoNuevo.contains("despejado")){
+            if (Integer.valueOf(lumens)<=40) {
+                tiempoNuevo = "Noche";
+            }else if(Integer.valueOf(lumens)<=2000){
+                tiempoNuevo = "Nublado";
+            }else{
+                tiempoNuevo = "Solete";
+            }
             //despejado
             //Hay que mirar lo de los lumnes aki y de hecho
             //Cambiar el icono tmb
@@ -515,23 +431,27 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         switch (tiempoNuevo) {
             case "Viento":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_viento));
-                transicionFondo.reverseTransition(5000);
+                //transicionFondo.reverseTransition(5000);
                 break;
+                //NUBLADO NO SALE NUNCA
             case "Nublado":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
-                transicionFondo.startTransition(5000);
+                //transicionFondo.startTransition(5000);
                 break;
             case "Lluvia":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_lluvia));
-                transicionFondo.startTransition(5000);
+                //transicionFondo.startTransition(5000);
                 break;
             case "HURACAN":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_tornado));
-                transicionFondo.startTransition(5000);
+                //transicionFondo.startTransition(5000);
                 break;
             case "Solete":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
-                transicionFondo.startTransition(5000);
+                //transicionFondo.startTransition(5000);
+                break;
+            case "Noche":
+                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_luna));
                 break;
         }
 
@@ -555,11 +475,141 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     }
 
-    public void escribirBasura(View view) {
-        databaseReference = fireDataBase.getReference("movidas");
-        databaseReference.child("User/" + usuario.getUid()).setValue("Buenas");
+    public void cambiarFondo(String fondoViejo, String fondoNew){
+        if (fondoNew.equals("Nublado")) {
+            if (!fondoViejo.equals("Noche")){
+                transicionFondo.startTransition(5000);
+            }
+        }else if(fondoNew.equals("Noche")){
+            if (!fondoViejo.equals("Nublado")){
+                transicionFondo.startTransition(5000);
+            }
+        }else{
+            transicionFondo.reverseTransition(5000);
+        }
+    }
+
+    public void iniciarElementos(View view){
+
+        //Elementos del layout
+        layoutPrincipal = view.findViewById(R.id.layoutPrincipal);
+        txtDia = view.findViewById(R.id.txtDia);
+        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+        txtConsejo = view.findViewById(R.id.txtConsejo);
+        // txtInforGeneral = view.findViewById(R.id.txtInformacionGeneral);
+        txtNivelPolvo = view.findViewById(R.id.txtPolvo);
+        imgTiempo = view.findViewById(R.id.imgTiempoViejo);
+        imgTiempoNuevo = view.findViewById(R.id.imgTiempoNuevo);
+
+        imgTiempo.bringToFront();
+
+        //Animaciones
+        transicionFondo = (TransitionDrawable) layoutPrincipal.getBackground();
+        //transicionIcono =  (TransitionDrawable) ContextCompat.getDrawable(this, R.drawable.transicion_sol_nube);
+        fadeOut = AnimationUtils.loadAnimation(view.getContext()
+                , R.anim.fadeout);
+        fadeIn = AnimationUtils.loadAnimation(view.getContext()
+                , R.anim.fadein);
+
+
+        //DATE y TIME's
+        DateFormat df = new DateFormat();
+        fecha = df.format("dd-MM", new Date()).toString();
+        txtDia.setText(fecha);
+
+
+
+        //Primitivos
+        //quizás esto habrái que guardarlo en otra parte...
+        //Y de hecho, una vez tengamos lo de los lumens, esto será innecesario -
+        //El fondo se cambiará en otro metodo ya que depende de variables difernetes
+        //a aquellas que controlan los iconos.
+        primerChequeo = true;
+
 
     }
+
+    private void actualizarDatos (View view){
+        listaDeDatosIzquierda.clear();
+        listaDeDatosIzquierda.add(new Datos_item("TEMP.", temeratura, "ºC"));
+        listaDeDatosIzquierda.add(new Datos_item("%HUM.", humedad, "%"));
+        listaDeDatosIzquierda.add(new Datos_item("LLUV.", lluvia, "mm/h"));
+
+        listaDeDatosDerecha.clear();
+        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", velViento, "Km/H"));
+        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", sensacionT, "ºC"));
+        listaDeDatosDerecha.add(new Datos_item("PRES.", presion, "Pa"));
+
+
+        recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
+        recyclerViewIZ.setHasFixedSize(true);
+        layoutManagerIZ = new LinearLayoutManager(view.getContext());
+        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+        recyclerViewIZ.setAdapter(adapterIZ);
+
+
+        recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
+        recyclerViewDR.setHasFixedSize(true);
+        layoutManagerDR = new LinearLayoutManager(view.getContext());
+        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
+        recyclerViewDR.setLayoutManager(layoutManagerDR);
+        recyclerViewDR.setAdapter(adapterDR);
+    }
+
+    public void listasIniciales(View view) {
+        //Arrays y listas
+        actualWeather = new HashMap<>();
+        actualWeather.put("Soleado", false);
+        actualWeather.put("Nublado", false);
+        actualWeather.put("Ventoso", false);
+        actualWeather.put("Lloviendo", false);
+
+        listaDeDatosIzquierda = new ArrayList<>();
+        listaDeDatosIzquierda.add(new Datos_item("TEMP", "30", "ºC"));
+        listaDeDatosIzquierda.add(new Datos_item("%HUM", "45", "%"));
+        listaDeDatosIzquierda.add(new Datos_item("LLUV", "0", "mm3"));
+
+        listaDeDatosDerecha = new ArrayList<>();
+        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", "20", "Km/H"));
+        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", "23", "ºC"));
+        listaDeDatosDerecha.add(new Datos_item("PRES", "34", "Atm"));
+
+        //txtConsejo.setText("Hace un día estupendo para ir en bici!");
+
+        //Recycled views
+        recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
+        recyclerViewIZ.setHasFixedSize(true);
+        layoutManagerIZ = new LinearLayoutManager(view.getContext());
+        adapterIZ = new Datos_Adapter(listaDeDatosIzquierda);
+        recyclerViewIZ.setLayoutManager(layoutManagerIZ);
+        recyclerViewIZ.setAdapter(adapterIZ);
+
+
+        recyclerViewDR = view.findViewById(R.id.RecycledDatosDerecha);
+        recyclerViewDR.setHasFixedSize(true);
+        layoutManagerDR = new LinearLayoutManager(view.getContext());
+        adapterDR = new Datos_Adapter(listaDeDatosDerecha);
+        recyclerViewDR.setLayoutManager(layoutManagerDR);
+        recyclerViewDR.setAdapter(adapterDR);
+
+    }
+
+    public void lasSharedPref (View view){
+        //Sharedpref
+        getPrefUser = this.getActivity().getSharedPreferences("MisPrefs", Context.MODE_PRIVATE);
+        getUserEdat = getPrefUser.getInt("edatUser", 99);
+        getUserGenero = getPrefUser.getString("generoUser", "none");
+
+        recordarUID = this.getActivity().getSharedPreferences("prefsUID", Context.MODE_PRIVATE);
+        editor = recordarUID.edit();
+        //editor.putString("Uid",usuario.getUid() + "-" + getUserEdat + "-" + getUserGenero);
+        //editor.putString("generoUser",datoSpinner);
+        // editor.apply();
+        //El de la uid
+
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -575,152 +625,5 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     }
 
 
-    //Locations
-
-    /*
-    public void cambiarFondo() {
-        float temp = Float.parseFloat(temeratura);
-
-        Log.d("DATOS", "Tiempo anterior antes del switch? : " + anteriorWeather);
-
-
-        switch (anteriorWeather) {
-            case "Soleado":
-                cambiarIcono("Soleado");
-                break;
-            case "Nublado":
-                cambiarIcono("Nublado");
-                break;
-        }
-
-
-
-        if (temp > 35){
-
-            AnimationDrawable animationDrawable = (AnimationDrawable)layoutPrincipal.getBackground();
-            animationDrawable.setEnterFadeDuration(2000);
-            animationDrawable.setExitFadeDuration(4000);
-            animationDrawable.setOneShot(true);
-            animationDrawable.start();
-            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_lila_gris));
-        }else{
-            //layoutPrincipal.setBackground(getDrawable(R.drawable.gradiente_1));
-        }
-
-
-    }
-    */
-
-        /*
-    //limpia los booleanos - si está lloviendo no puede estar soleado.
-    public void limpiarBools(String esteNo) {
-        Iterator it = actualWeather.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pareja = (Map.Entry) it.next();
-
-            if ((boolean) pareja.getValue() == true) {
-                //Pilla el tiempo que estaba puesto antes
-                anteriorWeather = pareja.getKey().toString();
-                Log.d("DATOS", "Tiempo anterior: " + anteriorWeather);
-            }
-
-            if (pareja.getKey().equals(esteNo)) {
-                pareja.setValue(true);
-                nuevoWeather = pareja.getKey().toString();
-                Log.d("DATOS", "Tiempo nuevo: " + anteriorWeather);
-            } else {
-                pareja.setValue(false);
-            }
-        }
-    }
-
-    public void deNubladoA() {
-
-        //animationDrawable.stop();
-        switch (nuevoWeather) {
-            case "Soleado":
-                Log.d("DATOS", "Estaba nublado y pasa a soleado");
-                /*layoutPrincipal.setBackground(getDrawable(R.drawable.nublado_a_solead));
-                animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
-                animationDrawable.setEnterFadeDuration(1000);
-                animationDrawable.setExitFadeDuration(3000);
-                animationDrawable.setOneShot(true);
-                animationDrawable.start();
-                */
-    /*
-                txtConsejo.setText("Hace un día estupendo para ir en bici!");
-                transicionFondo.reverseTransition(5000);
-
-                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
-                fadeIn.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) { }
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo)); }
-                    @Override
-                    public void onAnimationRepeat(Animation animation) { }
-                });
-
-                imgTiempo.startAnimation(fadeOut);
-                imgTiempoNuevo.startAnimation(fadeIn);
-
-                /*imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
-                imgTiempoNuevo.setVisibility(View.VISIBLE);
-                imgTiempoNuevo.startAnimation(fadeIn);
-                imgTiempo = imgTiempoNuevo;
-
-                break;
-            default:
-                break;
-
-        }
-    }
-     */
-    /*
-
-    public void deSoleadoa() {
-        //animationDrawable.stop();
-        switch (nuevoWeather) {
-            case "Nublado":
-
-                Log.d("DATOS", "Estaba soleado y pasa a nublado");
-                                /*layoutPrincipal.setBackground(getDrawable(R.drawable.lista_gradientes));
-                animationDrawable = (AnimationDrawable) layoutPrincipal.getBackground();
-                animationDrawable.setEnterFadeDuration(1000);
-                animationDrawable.setExitFadeDuration(3000);
-                animationDrawable.setOneShot(true);
-                animationDrawable.start();
-                */
-        /*
-                txtConsejo.setText("Mejor que hoy vayas en bus, y ojo no te olvides el paraguas!");
-                transicionFondo.startTransition(5000);
-                //imgTiempo.setImageDrawable(transicionIcono);
-                //transicionIcono.startTransition(5000);
-
-                imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
-                fadeIn.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) { }
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube)); }
-                    @Override
-                    public void onAnimationRepeat(Animation animation) { }
-                });
-                //imgTiempoNuevo.setVisibility(View.VISIBLE);
-                imgTiempoNuevo.startAnimation(fadeIn);
-                imgTiempo.startAnimation(fadeOut);
-                //imgTiempo = imgTiempoNuevo;
-                //imgTiempoNuevo.setVisibility(View.INVISIBLE);
-
-                //imgTiempo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
-
-                break;
-            default:
-                break;
-        }
-    }
-*/
 
 }
