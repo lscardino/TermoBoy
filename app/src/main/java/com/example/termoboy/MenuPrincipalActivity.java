@@ -200,13 +200,11 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                                 Log.d("VALOR", "Valor a leer " + child.getKey());
 
                                 //Sequenccia de control, pra ver si es en formato 00:00 el "child"
-                                if (!child.getKey().equals("Transporte")) {
                                     Log.d("VALOR", "Valor a leer(DENTRO) " + child.getKey());
                                     Log.d("VALOR", "Hijos de  " + child.getKey() + ": " + child.getChildrenCount());
                                     String horaFinal = child.getKey();
                                     //Izquierda
 //ff
-                                    if (child.getChildrenCount() == 9) {
                                         temeratura = child.child("Temperatura").getValue().toString();
                                         humedad = child.child("Humedad").getValue().toString();
                                         lluvia = child.child("Lluvia").getValue().toString();
@@ -258,7 +256,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                                         estadoACambiar = tiempo;
                                         iluminacionNueva = Calculos.devolverLuminosidad(lumens);
                                         if (!estadoACambiar.equals(estadoInicial)) {
-                                            if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)< 40) {
+                                            if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)< 40) {
                                                 cambiarIcono("Noche");
                                                 estadoInicial = "Noche";
                                                 // Y la luminosidad está baja - pon una luna
@@ -276,10 +274,10 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                                             //la iluminacion es difernete
                                             //DEberias
                                             cambiarFondo(iluminacionVieja,iluminacionNueva);
-                                            if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)< 40) {
+                                            if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)< 40) {
                                                 cambiarIcono("Noche");
                                                 estadoInicial = "Noche";
-                                            }else if (tiempo.equals("el cielo está despejado") && Integer.parseInt(lumens)<= 2000){
+                                            }else if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)<= 2000){
                                                 cambiarIcono("Nublado");
                                                 estadoInicial = "Nublado";
                                             }
@@ -288,9 +286,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         }
 
-                                    }
 
-                                }
                             }
                         }
 
