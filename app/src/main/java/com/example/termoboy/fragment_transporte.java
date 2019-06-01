@@ -97,7 +97,6 @@ public class fragment_transporte extends Fragment {
 
             }
         });
-        Log.d("TRANS", "Mira Query " + ultimaFecha.toString());
 /*
         //Mira la ultima fecha introducida.
         ultimaFecha.addValueEventListener(new ValueEventListener() {
@@ -212,12 +211,13 @@ public class fragment_transporte extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            recargarDatosBarraProgreso();
+            //recargarDatosBarraProgreso();
         }
     }
 
     private void recargarDatosBarraProgreso() {
 
+        Log.d("TRANS","Metodo recarga Barra");
         listaDeTrasnportes = new ArrayList<>();
         listaDeTrasnportes.add(new transporte_item(R.drawable.ic_bici, "Bici", "Bici", controlErrorMap("Bici")));
         listaDeTrasnportes.add(new transporte_item(R.drawable.ic_coche, "Coche", "Coche", controlErrorMap("Coche")));

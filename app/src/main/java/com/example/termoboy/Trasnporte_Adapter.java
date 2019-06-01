@@ -29,7 +29,9 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
 
+
     public Trasnporte_Adapter(ArrayList<transporte_item> listaTransportesA, String mClicked) {
+        Log.d("ADAPTER", "Entra al Adaptador");
         this.listaTransportesA = listaTransportesA;
         this.cliked = mClicked;
     }
@@ -52,32 +54,32 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         private boolean mainClicked = false;
         private String transporteID;
         private Map<String, Object> datoSubir;
-        private CountDownLatch downLatch;
-        //Faltaria lo de la barra de progreso
+        private CountDownLatch latchPrepararBarraListener;
 
         public TransporteViewHolder(@NonNull final View itemView) {
             super(itemView);
+            Log.d("ADAPTER","Relacion de FK ");
             imageView = itemView.findViewById(R.id.imgtransporte);
             mTextView = itemView.findViewById(R.id.nombreTransporte);
             mProgress = itemView.findViewById(R.id.progressBar);
             mBgCardView = itemView.findViewById(R.id.cardviewItemsTrasnporte);
+            mProgress.setMax(100);
+            this.latchPrepararBarraListener = new CountDownLatch(1);
 
-            downLatch = new CountDownLatch(1);
-            ThreadProgress thread = new ThreadProgress(downLatch);
+            ThreadProgress thread = new ThreadProgress(this.latchPrepararBarraListener);
             thread.start();
 
             try {
-                downLatch.await();
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             //Para ver si fue Clicado antes
             if (cliked != null) {
                 viewClicked();
-            } else {
-                itemView.setOnClickListener(new ListenerClick());
             }
-
+            itemView.setOnClickListener(new ListenerClick());
         }
 
         private void viewClicked() {
@@ -87,9 +89,10 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                Log.d("ADAPTER","Despierten Todos !");
                 sincronizedObj.notifyAll();
             }
-            if (cliked.equals(transporteID)) {
+            if (cliked.equals(this.transporteID)) {
                 //mBgCardView.setBackgroundColor(itemView.getContext().getColor(R.color.colorPrimaryDark));
             }
         }
@@ -121,7 +124,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
 
                     MiraHoraInternet horaInternetURL = new MiraHoraInternet();
                     String fFechaInternet = horaInternetURL.getDate();
-                    Log.d("ADAPTER ", fFechaInternet);
+                    Log.d("ADAPTER ", "Sube datos a " + fFechaInternet);
 
                     //Crea si no existe la crea y si existe escribe encima (no hya mucha diferencia)
                     databaseReference.child(fFechaInternet + "/Transporte").child(transporteID).updateChildren(datoSubir);
@@ -130,16 +133,16 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
         }
 
         private class ThreadProgress extends Thread {
-            private CountDownLatch downLatch;
+            private CountDownLatch downLatchPreparar;
 
             ThreadProgress(CountDownLatch latch) {
-                this.downLatch = latch;
+                this.downLatchPreparar = latch;
             }
             @Override
             public void run() {
                 synchronized (sincronizedObj) {
                     try {
-                        downLatch.countDown();
+                        Log.d("ADAPTER","Espera para BarraProgreso");
                         sincronizedObj.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -148,6 +151,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
 
                 if (!mainClicked && cliked == null) {
                     try {
+                        Log.d("ADAPTER","No soy el Clicado");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -161,7 +165,12 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                         mProgress.setVisibility(View.VISIBLE);
                     }
                 });
-
+                try {
+                    this.downLatchPreparar.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("ADAPTER", "Que comienzo a contar MAX " + numeroTransporte);
                 do {
                     final int numProgress = numCount;
                     mProgress.post(new Runnable() {
@@ -186,14 +195,15 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
     public void onBindViewHolder(@NonNull TransporteViewHolder transporteViewHolder, int i) {
         transporte_item currentItem = listaTransportesA.get(i);
 
+        Log.d("ADAPTER","Recoge los datos de " + currentItem.getTransporteNombre());
         transporteViewHolder.imageView.setImageResource(currentItem.getTransporteImg());
         transporteViewHolder.mTextView.setText(currentItem.getTransporteNombre());
         transporteViewHolder.numeroTransporte = currentItem.gettransporteCantidad();
         transporteViewHolder.transporteID = currentItem.getTransporteID();
-        transporteViewHolder.mProgress.setMax(100);
         if (this.cliked == null) {
-            transporteViewHolder.mProgress.setVisibility(View.INVISIBLE);
+            //transporteViewHolder.mProgress.setVisibility(View.INVISIBLE);
         }
+        transporteViewHolder.latchPrepararBarraListener.countDown();
     }
 
     @Override

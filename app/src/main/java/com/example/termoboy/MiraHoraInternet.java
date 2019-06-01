@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class MiraHoraInternet {
     private DateFormat dateFormat;
-    private String resultado = "";
+    private String resultado = "1997-07-07";
     private CountDownLatch countDownLatch;
 
     public MiraHoraInternet() {
@@ -52,6 +52,8 @@ public class MiraHoraInternet {
                 }
 
             } catch (IOException e) {
+                resultado = "1997-07-07";
+                countDownLatch.countDown();
             }
         }
     }
