@@ -58,7 +58,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
 
         public TransporteViewHolder(@NonNull final View itemView) {
             super(itemView);
-            Log.d("ADAPTER","Relacion de FK ");
+            Log.d("ADAPTER", "Relacion de FK ");
             imageView = itemView.findViewById(R.id.imgtransporte);
             mTextView = itemView.findViewById(R.id.nombreTransporte);
             mProgress = itemView.findViewById(R.id.progressBar);
@@ -89,7 +89,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Log.d("ADAPTER","Despierten Todos !");
+                Log.d("ADAPTER", "Despierten Todos !");
                 sincronizedObj.notifyAll();
             }
             if (cliked.equals(this.transporteID)) {
@@ -103,7 +103,6 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             public void onClick(View v) {
                 if (cliked == null) {
                     mainClicked = true;
-                    numeroTransporte++;
                     cliked = transporteID;
                     viewClicked();
 
@@ -142,50 +141,47 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
             public void run() {
                 synchronized (sincronizedObj) {
                     try {
-                        Log.d("ADAPTER","Espera para BarraProgreso");
+                        Log.d("ADAPTER", "Espera para BarraProgreso");
                         sincronizedObj.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                if (cliked != null) {
 
-                if (!mainClicked && cliked == null) {
-                    try {
-                        Log.d("ADAPTER","No soy el Clicado");
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                int numCount = 0;
-                mProgress.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgress.setVisibility(View.VISIBLE);
-                    }
-                });
-                try {
-                    this.downLatchPreparar.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d("ADAPTER", "Que comienzo a contar MAX " + numeroTransporte);
-                do {
-                    final int numProgress = numCount;
+                    int numCount = 0;
                     mProgress.post(new Runnable() {
                         @Override
                         public void run() {
-                            mProgress.setProgress(numProgress);
+                            mProgress.setVisibility(View.VISIBLE);
                         }
                     });
                     try {
-                        Thread.sleep(numProgress / 3);
+                        this.downLatchPreparar.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    numCount++;
-                } while (numCount <= numeroTransporte);
+                    Log.d("ADAPTER", "Que comienzo a contar MAX " + numeroTransporte);
+                    do {
+                        final int numProgress = numCount;
+                        mProgress.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProgress.setProgress(numProgress);
+                            }
+                        });
+                        try {
+                            Thread.sleep(numProgress / 3);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        numCount++;
+                    } while (numCount <= numeroTransporte);
+                }else{
+                    if(!mainClicked){
+                        Log.d("ADAPTER", "No soy el Clicado");
+                    }
+                }
             }
         }
 
@@ -195,7 +191,7 @@ public class Trasnporte_Adapter extends RecyclerView.Adapter<Trasnporte_Adapter.
     public void onBindViewHolder(@NonNull TransporteViewHolder transporteViewHolder, int i) {
         transporte_item currentItem = listaTransportesA.get(i);
 
-        Log.d("ADAPTER","Recoge los datos de " + currentItem.getTransporteNombre());
+        Log.d("ADAPTER", "Recoge los datos de " + currentItem.getTransporteNombre());
         transporteViewHolder.imageView.setImageResource(currentItem.getTransporteImg());
         transporteViewHolder.mTextView.setText(currentItem.getTransporteNombre());
         transporteViewHolder.numeroTransporte = currentItem.gettransporteCantidad();
