@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 public class FragmentDialogSalir extends DialogFragment {
     private Activity activity;
 
@@ -23,6 +21,7 @@ public class FragmentDialogSalir extends DialogFragment {
                 })
                 .setNegativeButton("SI", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        activity = getActivity();
                         activity.finish();
                     }
                 });
