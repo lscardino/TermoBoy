@@ -2,28 +2,10 @@ package com.example.termoboy;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.toMap;
-
 public class Calculos {
-    float presionF;
-    float velVientoF;
-    float humedadF;
-    float temeraturaF;
-    float mmCubicosF;
-    float sensacionTermicaF;
-    float cantidadPolvoF;
-
 
     //Depende la luminosidad, cambias el fondo.
     public static String devolverLuminosidad(String luxes) {
@@ -32,7 +14,7 @@ public class Calculos {
 
         if (luxesF <= 40) {
             luminosidadActual = "Noche";
-        } else if (luxesF <= 2000){
+        } else if (luxesF <= 2000) {
             luminosidadActual = "Nublado";
         } else {
             luminosidadActual = "el cielo está despejado";
@@ -50,21 +32,11 @@ public class Calculos {
         float mmCubicosF = Float.valueOf(mmCubicos);
         float sensacionTermicaF = Float.valueOf(sensacionTermica);
 
-
-       // Map<String,Integer> contadoVehiculos = new HashMap<>();
-
         int coche = 0;
         int bici = 0;
         int apie = 0;
         int tPub = 0;
         int casa = 0;
-
-
-
-
-
-
-
 
         //Sensacion termica.
         if (sensacionTermicaF > 30) {
@@ -108,12 +80,8 @@ public class Calculos {
             bici -= 4;
         }
 
-        //Luminosidad
-        //float luxesF = Float.parseFloat(luxes);
-
 
         //Viento
-        //Quizas 3 valores es muy poco
         if (velVientoF > 110) {
             comoEstaElClima += "HURACAN-";
             casa += 20;
@@ -130,16 +98,10 @@ public class Calculos {
             coche -= 4;
             bici += 3;
             apie += 3;
-
-
         }
 
-        //Lluvia Intensidad (mm/h)
-
         if (mmCubicosF > 100) {
-
-
-            comoEstaElClima += " está lloviendo de forma torrencial-";
+            comoEstaElClima += "está lloviendo de forma torrencial-";
             casa += 3;
             coche += 3;
             apie -= 6;
@@ -179,60 +141,48 @@ public class Calculos {
             coche -= 4;
         }
 
-        /*
-        contadoVehiculos.add(coche);
-        contadoVehiculos.add(bici);
-        contadoVehiculos.add(tPub);
-        contadoVehiculos.add(apie);
-
-        Collections.sort(contadoVehiculos);
-        */
-
-
-
         Log.d("VALOR", "Coche: " + coche);
         Log.d("VALOR", "Bici: " + bici);
         Log.d("VALOR", "TPub: " + tPub);
         Log.d("VALOR", "A pie: " + apie);
 
         Map<Integer, String> listaVehiculos = new TreeMap<>();
-        listaVehiculos.put(coche,"venir en coche");
-        listaVehiculos.put(bici,"venir en bici");
-        listaVehiculos.put(apie,"venir a pie");
+        listaVehiculos.put(coche, "venir en coche");
+        listaVehiculos.put(bici, "venir en bici");
+        listaVehiculos.put(apie, "venir a pie");
         listaVehiculos.put(tPub, "coger el transporte publico");
         listaVehiculos.put(casa, "quedarte en casa");
 
         Log.d("VALOR", "Mapa " + listaVehiculos);
 
-        String [] seleccionaricono = comoEstaElClima.split("-");
+        String[] seleccionaricono = comoEstaElClima.split("-");
 
         String enviar = "el cielo está despejado";
-        for (String dato:
-             seleccionaricono) {
-            Log.d("VALOR", "elemento " +  dato);
+        for (String dato :
+                seleccionaricono) {
+            Log.d("VALOR", "elemento " + dato);
 
-            if (dato.equals("HURACAN")){
+            if (dato.equals("HURACAN")) {
                 enviar = "HAY UN HURACAN";
                 break;
-            }else if(dato.contains("lluvia") || dato.contains("gotas")
+            } else if (dato.contains("lluvia") || dato.contains("gotas")
                     || dato.contains("lloviendo")
-                    || dato.contains("llueve")){
-                enviar =  dato;
-                if  (dato.contains("vientos")){
+                    || dato.contains("llueve")) {
+                enviar = dato;
+                if (dato.contains("vientos")) {
                     enviar = "hay tormenta";
                     break;
                 }
                 break;
-            }else{
-                //esto es despejado - pero hay que ver si hace frio o no
-                if (dato.contains("vientos")){
-                    enviar="hay fuertes vientos";}
+            } else {
+                if (dato.contains("vientos")) {
+                    enviar = "hay fuertes vientos";
+                }
             }
             Log.d("VALOR", "dato a enviar de momento " + enviar);
 
         }
         Log.d("VALOR", "dato a enviar " + enviar);
-
 
 
         comoEstaElClima += ((TreeMap<Integer, String>) listaVehiculos).lastEntry().getValue() + "-" + enviar;

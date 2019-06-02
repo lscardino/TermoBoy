@@ -107,15 +107,15 @@ public class Bienvenido_Registro extends AppCompatActivity {
         if (!edatUser.getText().toString().isEmpty()) {
             int edadUser = Integer.parseInt(edatUser.getText().toString());
             if (edadUser < 0) {
-                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, Una edad no puede ser negativa.",
+                Toast.makeText(getApplicationContext(), getString(R.string.infoEdadNegativa),
                         Toast.LENGTH_LONG).show();
 
             } else if (edadUser <= 5) {
-                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, muy pequeño para usar la app.",
+                Toast.makeText(getApplicationContext(), getString(R.string.infoEdadDemasiadoPequeño),
                         Toast.LENGTH_LONG).show();
 
             } else if (edadUser >= 140) {
-                Toast.makeText(getApplicationContext(), "INFO - Edad erronea, edad muy elevada.",
+                Toast.makeText(getApplicationContext(), getString(R.string.infoEdadDeamsaidoViejo),
                         Toast.LENGTH_LONG).show();
             } else {
                 String datoSpinner = generoUser.getSelectedItem().toString();
@@ -133,7 +133,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
             }
 
         } else {
-            Toast.makeText(getApplicationContext(), "Por favor rellena todos los campos",
+            Toast.makeText(getApplicationContext(), getString(R.string.camposVacios),
                     Toast.LENGTH_LONG).show();
         }
         btnEntra.setEnabled(true);

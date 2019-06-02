@@ -1,17 +1,88 @@
 <resources>
-    <string name="app_name">TermoBoy</string>
+    <string name="app_name" translatable="false">TermoBoy</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="seleccionGenero">Selecciona tu genero</string>
-    <string name="popUpBienvenida">Antes de continuar nos gustaría que nos proporcionases
-    un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,
-    esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor
-    experiencia a los usuarios.</string>
-    <string name="popUpSalir">De verdad desea salir?</string>
+    <string name="txtEdad">Tu Edad</string>
+    <string name="hintEtxtEdat">Edad</string>
+    <string name="txtGenero">Tu Género</string>
+    <string name="btEntrar">Entrar</string>
+    <string name="txtAlternativoImgLogo" translatable="false">Logo TermoBoy</string>
+    <string name="txtDia">Día</string>
+    <string name="txtConsejo">Consejo</string>
+    <string name="txtCantidaPolvo">Nivel de polvo en el aire:</string>
+    <string name="txtDescripcionImagenTiempo">Tiempo Actual</string>
+    <string name="txttiempoNuevo">Imagen del tiempo nuevo</string>
+    <string name="txtParametro" translatable="false">PARAMETRO</string>
+    <string name="txtValorParametro" translatable="false">30</string>
+    <string name="MedidaParametro" translatable="false">ºC</string>
+    <string name="txtVenirACalse">Cómo vendrás hoy a clase?</string>
+    <string name="imgTrasnporte">Imagen del medio de trasnporte</string>
+    <!-- Pantalla de Bienvenida -->
+    <string name="txtTrasnporteNombre" translatable="false">Linea1</string>
+    <string name="infoEdadNegativa">INFO - Edad erronea, Una edad no puede ser negativa.</string>
+    <string name="infoEdadDemasiadoPequeño">INFO - Edad erronea, eres demasiado joven para usar la app.</string>
+    <string name="infoEdadDeamsaidoViejo">INFO - Edad erronea, edad demasiado elevada.</string>
+    <string name="camposVacios">Por favor rellena todos los campos</string>
     <string-array name="itemsGenero">
         <item>Hombre</item>
         <item>Mujer</item>
         <item>Otro</item>
     </string-array>
+    <!--Pop up Salir-->
+    <string name="popUpSalir">De verdad desea salir?</string>
+    <string name="popUpPositivo">Sí</string>
+    <string name="popUpNegativo">No</string>
+    <!--Pop up Aviso-->
+    <string name="popUpBienvenida">Antes de continuar nos gustaría que nos proporcionases
+    un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,
+    esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor
+    experiencia a los usuarios.</string>
+    <string name="popUpVale">Vale</string>
+    <string name="popUpAnonimo">Prefiero no proporcionar ningún dato</string>
+    <!-- Calculos -->
+    <string name="noche">Noche</string>
+    <string name="nublado">Nublado</string>
+    <string name="cieloDespejado">el cielo está despejado</string>
+
+    <string name="sTermica30">hace un calor abrasador-</string>
+    <string name="sTermica25">hace calorcete-</string>
+    <string name="sTermica15">la temperatura es agradable-</string>
+    <string name="sTermica7">hace fresca-</string>
+    <string name="sTermica0">hace frio-</string>
+    <string name="sTermicaM0">las temperaturas están bajo cero-</string>
+
+    <string name="viento110">HURACÁN-</string>
+    <string name="viento40">fuertes vientos-</string>
+    <string name="viento0">una brisa agradable-</string>
+    <string name="enviarHuracan">HAY UN HURACAN</string>
+    <string name="enviarTormenta">hay tormenta</string>
+    <string name="enviarFuertesVientos">hay fuertes vientos</string>
+
+    <string name="mmh100">está lloviendo de forma torrencial-</string>
+    <string name="mmh40">está cayendo una fuerte lluvia-</string>
+    <string name="mmh10">llueve moderadamente-</string>
+    <string name="mmh2_5">está lloviendo ligeramente-</string>
+    <string name="mmh0_">están cayendo cuatro gotas-</string>
+    <string name="mmhNada">el cielo está despejado-</string>
+
+    <string name="venirCoche">venir en coche</string>
+    <string name="venirBici">venir en bici</string>
+    <string name="venirAndando">venir a pie</string>
+    <string name="venirtpublico">coger el transporte publico</string>
+    <string name="noVenir">quedarte en casa</string>
+
+    <!-- Calculos contiene -->
+    <string name="contieneLluvia">lluvia</string>
+    <string name="contieneGotas">gotas</string>
+    <string name="contieneLloviendo">lloviendo</string>
+    <string name="contieneLlueve">llueve</string>
+    <string name="conteineVientos">vientos</string>
+
+    <!--Activity tiempo-->
+    <string name="hoy">Hoy </string>
+    <string name="recomendamos">, te recomendamos</string>
+
+
 </resources>

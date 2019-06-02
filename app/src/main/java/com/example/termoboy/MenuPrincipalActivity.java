@@ -245,7 +245,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                                         vehiculo = vivesToLejos(vehiculo);
 
 
-                                        txtConsejo.setText("Hoy " + tiempo + ", te recomendamos " + vehiculo);
+                                        txtConsejo.setText(getString(R.string.hoy) + tiempo + getString(R.string.recomendamos) + vehiculo);
 
                                         Log.d("VALOR Vehiculo: ", vehiculo);
 

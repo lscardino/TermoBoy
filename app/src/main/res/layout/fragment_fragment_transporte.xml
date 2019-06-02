@@ -9,15 +9,14 @@
     android:background="@drawable/gradiente_lilarosa">
 
     <TextView
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cómo vendrás hoy a clase?"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:text="@string/txtVenirACalse"
         android:textAlignment="center"
         android:textColor="#F1ECEC"
-        android:textSize="25dp"
-       />
+        android:textSize="25sp" />
     <View
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
@@ -28,7 +27,7 @@
 <android.support.constraint.ConstraintLayout
     android:layout_weight="1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="0dp">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycledTransporte"
         android:layout_width="wrap_content"

@@ -16,9 +16,9 @@
             android:id="@+id/txtParametro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PARAMETRO"
+            android:text="@string/txtParametro"
             android:textColor="#F1ECEC"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtValorParametro"
@@ -26,9 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtParametro"
             android:layout_marginTop="-5dp"
-            android:text="30"
+            android:text="@string/txtValorParametro"
             android:textColor="#F1ECEC"
-            android:textSize="29dp" />
+            android:textSize="29sp" />
 
         <TextView
             android:id="@+id/txtMedida"
@@ -38,9 +38,9 @@
             android:layout_toEndOf="@id/txtValorParametro"
             android:gravity="center"
             android:layout_alignBottom="@id/txtValorParametro"
-            android:text="ºC"
+            android:text="@string/MedidaParametro"
             android:textColor="#F1ECEC"
-            android:textSize="22dp" />
+            android:textSize="22sp" />
 
     </RelativeLayout>
 
