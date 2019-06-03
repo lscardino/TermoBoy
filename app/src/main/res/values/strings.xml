@@ -79,11 +79,27 @@
     <string name="contieneLloviendo">lloviendo</string>
     <string name="contieneLlueve">llueve</string>
     <string name="conteineVientos">vientos</string>
+    <string name="contieneHuracan">HURACAN</string>
 
     <!--Activity tiempo-->
     <string name="hoy">Hoy </string>
     <string name="recomendamos">, te recomendamos</string>
+    <string name="despejadoSinGuion">el cielo está despejado</string>
+    <string name="ventoso">Ventoso</string>
+    <string name="soleado">Soleado</string>
+    <string name="Lluvia">Lluvia</string>
+    <string name="Viento">Viento</string>
+    <string name="despejado">despejado</string>
+    <string name="Solete">Solete</string>
 
+    <!-- Medidas -->
+    <string name="TEMP" translatable="false">TEMP.</string>
+    <string name="HUM" translatable="false">%HUM.</string>
+    <string name="LLUVI" translatable="false">LLUV.</string>
+    <string name="VELVIENTO">VEL. VIENTO</string>
+    <string name="STERMC">S. TÉRMICA</string>
+    <string name="PRES" translatable="false">PRES.</string>
+    <string name="nivelDePolvo">Nivel de polvo:</string>
 
 
 </resources>

@@ -4,7 +4,7 @@
     <string name="camposVacios">Si us plau, omple tots els camps</string>
     <string name="cieloDespejado">el cel està serè</string>
     <string name="conteineVientos">vents</string>
-    <string name="contieneGotas">gotes</string>
+    <string name="contieneGotas">bona</string>
     <string name="contieneLloviendo">plovent</string>
     <string name="contieneLlueve">plou</string>
     <string name="contieneLluvia">pluja</string>
@@ -18,8 +18,8 @@
     <string name="infoEdadNegativa">INFO - Edat erronea, una edat no pot ser negativa.</string>
     <string name="mmh10">plou moderadament-</string>
     <string name="mmh100">plou de forma torrencial-</string>
-    <string name="mmhNada">el cel està serè</string>
-    <string name="noVenir">quedarte a casa</string>
+    <string name="mmhNada">el cel està serè-</string>
+    <string name="noVenir">quedarte a casa-</string>
     <string name="noche">Nit</string>
     <string name="nublado">Ennuvolat</string>
     <string name="popUpAnonimo">Prefereixo no proporcioanr dades.</string>
@@ -47,12 +47,23 @@
     <string name="venirBici">vindre en bici</string>
     <string name="venirCoche">vindre en cotxe</string>
     <string name="venirtpublico">agafar el trasport públic</string>
-    <string name="viento0">un vent agradable-</string>
+    <string name="viento0">una brisa agradable-</string>
     <string name="viento110">HURACÀ-</string>
     <string name="viento40">forts vents-</string>
     <string name="enviarFuertesVientos">--</string>
-    <string name="mmh0_">--</string>
-    <string name="mmh2_5">--</string>
-    <string name="mmh40">--</string>
+    <string name="mmh0_">cuasi no plou-</string>
+    <string name="mmh2_5">està plovent una mica-</string>
+    <string name="mmh40">està caient una bona-</string>
     <string name="popUpBienvenida">--</string>
+    <string name="Viento">Vent</string>
+    <string name="Lluvia">Pluja</string>
+    <string name="contieneHuracan">HURACÀ</string>
+    <string name="Solete">Solet</string>
+    <string name="STERMC">S. TÈRMICA</string>
+    <string name="VELVIENTO">VEL. VENT</string>
+    <string name="despejado">serè</string>
+    <string name="despejadoSinGuion">el cel està serè</string>
+    <string name="soleado">" Assolellat"</string>
+    <string name="ventoso">Ventòs</string>
+    <string name="nivelDePolvo">Nivell de pols:</string>
 </resources>

@@ -215,7 +215,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         //Abajo
                                         polvo = child.child("Polvo").getValue().toString();
-                                        txtNivelPolvo.setText("Nivel de polvo: " + polvo);
+                                        txtNivelPolvo.setText(getActivity().getString(R.string.nivelDePolvo) + polvo);
 
                                         //Lumens
                                         lumens = child.child("Lumens").getValue().toString();
@@ -227,7 +227,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         Log.d("Valor", "cantidad de datos: " + child.getChildrenCount());
 
-                                        String eee = Calculos.comoEstaElTiempoEh(lluvia, velViento, sensacionT, presion);
+                                        String eee = Calculos.comoEstaElTiempoEh(lluvia, velViento, sensacionT, getActivity());
 
                                         Log.d("VALOR de eee: ", eee);
 
@@ -245,7 +245,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                                         vehiculo = vivesToLejos(vehiculo);
 
 
-                                        txtConsejo.setText(getString(R.string.hoy) + tiempo + getString(R.string.recomendamos) + vehiculo);
+                                        txtConsejo.setText(getString(R.string.hoy) + " " + tiempo + getString(R.string.recomendamos) + " " + vehiculo);
 
                                         Log.d("VALOR Vehiculo: ", vehiculo);
 
@@ -254,32 +254,30 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
 
                                         estadoACambiar = tiempo;
-                                        iluminacionNueva = Calculos.devolverLuminosidad(lumens);
+                                        iluminacionNueva = Calculos.devolverLuminosidad(lumens, getActivity());
                                         if (!estadoACambiar.equals(estadoInicial)) {
-                                            if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)< 40) {
-                                                cambiarIcono("Noche");
-                                                estadoInicial = "Noche";
+                                            if (tiempo.equals(getString(R.string.despejadoSinGuion)) && Float.parseFloat(lumens)< 40) {
+                                                cambiarIcono(getString(R.string.noche));
+                                                estadoInicial = getString(R.string.noche);
                                                 // Y la luminosidad está baja - pon una luna
                                             }else {
                                                 cambiarIcono(estadoACambiar);
                                                 estadoInicial = estadoACambiar;
                                             }
 
-                                        } else {
-                                            //Los iconos se quedan igual
-                                        }
+                                        } //SI no, los iconos se quedan igual
 
 
                                         if (!iluminacionNueva.equals(iluminacionVieja)) {
                                             //la iluminacion es difernete
                                             //DEberias
                                             cambiarFondo(iluminacionVieja,iluminacionNueva);
-                                            if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)< 40) {
-                                                cambiarIcono("Noche");
-                                                estadoInicial = "Noche";
-                                            }else if (tiempo.equals("el cielo está despejado") && Float.parseFloat(lumens)<= 2000){
-                                                cambiarIcono("Nublado");
-                                                estadoInicial = "Nublado";
+                                            if (tiempo.equals(getString(R.string.despejadoSinGuion)) && Float.parseFloat(lumens)< 40) {
+                                                cambiarIcono(getString(R.string.noche));
+                                                estadoInicial = getString(R.string.noche);
+                                            }else if (tiempo.equals(getString(R.string.despejadoSinGuion)) && Float.parseFloat(lumens)<= 2000){
+                                                cambiarIcono(getString(R.string.nublado));
+                                                estadoInicial = getString(R.string.nublado);
                                             }
 
                                             iluminacionVieja = iluminacionNueva;
@@ -359,15 +357,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
         if (temeraturaF > 50.0) {
             //Está lloviendo
-            actual = "Nublado";
+            actual = getString(R.string.nublado);
             Log.d("DATOS", "Segun los datos está Nublado");
 
         } else if (velVientoF > 100) {
             //Hace viento
-            actual = "Ventoso";
+            actual = getString(R.string.ventoso);
         } else {
             //Hace sol - de hecho habría que mirar lo de la luminosidad.
-            actual = "Soleado";
+            actual = getString(R.string.soleado);
             Log.d("DATOS", "segun lso datos está Soleado");
         }
 
@@ -376,18 +374,45 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         //limpiarBools(actual);
     }
 
+    ///OJO SI CAMBIAS LOS STRINGS
     private String vivesToLejos(String vehiculo){
         switch (vehiculo){
+            //Bici
             case "venir en bici":
                 if (distanciaHastaElNico > 10){
-                    vehiculo = "venir en coche";
+                    vehiculo = getString(R.string.venirCoche);
                 }
                 break;
+            case "to come biking":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = getString(R.string.venirCoche);
+                }
+                break;
+            case "vindre en bici":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = getString(R.string.venirCoche);
+                }
+                break;
+                //A pie
             case "venir a pie":
                 if (distanciaHastaElNico > 10){
-                    vehiculo = "venir en coche";
+                    vehiculo = getString(R.string.venirCoche);
                 }else if(distanciaHastaElNico > 5){
-                    vehiculo = "venir en bici";
+                    vehiculo = getString(R.string.venirBici);
+                }
+                break;
+            case "vindre a peu":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = getString(R.string.venirCoche);
+                }else if(distanciaHastaElNico > 5){
+                    vehiculo = getString(R.string.venirBici);
+                }
+                break;
+            case "to come by foot":
+                if (distanciaHastaElNico > 10){
+                    vehiculo = getString(R.string.venirCoche);
+                }else if(distanciaHastaElNico > 5){
+                    vehiculo = getString(R.string.venirBici);
                 }
                 break;
             default:
@@ -399,23 +424,24 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     private void cambiarIcono(String tiempoNuevo) {
 
 
-        if (tiempoNuevo.contains("lluvia") || tiempoNuevo.contains("gotas")
-                || tiempoNuevo.contains("lloviendo")
-                || tiempoNuevo.contains("llueve")) {
-            tiempoNuevo = "Lluvia";
-        } else if (tiempoNuevo.contains("HURACAN")) {
-            tiempoNuevo = "HURACAN";
+        if (tiempoNuevo.contains(getString(R.string.contieneLluvia)) ||
+                tiempoNuevo.contains(getString(R.string.contieneGotas))
+                || tiempoNuevo.contains(getString(R.string.contieneLloviendo))
+                || tiempoNuevo.contains(getString(R.string.contieneLlueve))) {
+            tiempoNuevo = getString(R.string.Lluvia);
+        } else if (tiempoNuevo.contains(getString(R.string.contieneHuracan))) {
+            tiempoNuevo = getString(R.string.contieneHuracan);
             //Huracan
-        } else if (tiempoNuevo.contains("vientos")) {
-            tiempoNuevo = "Viento";
+        } else if (tiempoNuevo.contains(getString(R.string.conteineVientos))) {
+            tiempoNuevo = getString(R.string.Viento);
             //Viento
-        } else if(tiempoNuevo.contains("despejado")){
+        } else if(tiempoNuevo.contains(getString(R.string.despejado))){
             if (Integer.valueOf(lumens)<=40) {
-                tiempoNuevo = "Noche";
+                tiempoNuevo = getString(R.string.noche);
             }else if(Integer.valueOf(lumens)<=2000){
-                tiempoNuevo = "Nublado";
+                tiempoNuevo = getString(R.string.nublado);
             }else{
-                tiempoNuevo = "Solete";
+                tiempoNuevo = getString(R.string.Solete);
             }
             //despejado
             //Hay que mirar lo de los lumnes aki y de hecho
@@ -426,27 +452,39 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         //YA NO, já!
         switch (tiempoNuevo) {
             case "Viento":
+            case "Vent":
+            case "Wind":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_viento));
                 //transicionFondo.reverseTransition(5000);
                 break;
                 //NUBLADO NO SALE NUNCA
             case "Nublado":
+            case "Ennuvolat":
+            case "Cloudy":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_nube));
                 //transicionFondo.startTransition(5000);
                 break;
             case "Lluvia":
+            case "Pluja":
+            case "Rain":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_lluvia));
                 //transicionFondo.startTransition(5000);
                 break;
             case "HURACAN":
+            case "HURACÀ":
+            case "HURRICANE":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_tornado));
                 //transicionFondo.startTransition(5000);
                 break;
             case "Solete":
+            case "Solet":
+            case "Sunny":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_solete_amarillo));
                 //transicionFondo.startTransition(5000);
                 break;
             case "Noche":
+            case "Nit":
+            case "Night":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_luna));
                 break;
         }
@@ -472,12 +510,12 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     }
 
     public void cambiarFondo(String fondoViejo, String fondoNew){
-        if (fondoNew.equals("Nublado")) {
-            if (!fondoViejo.equals("Noche")){
+        if (fondoNew.equals(getString(R.string.nublado))) {
+            if (!fondoViejo.equals(getString(R.string.noche))){
                 transicionFondo.startTransition(5000);
             }
-        }else if(fondoNew.equals("Noche")){
-            if (!fondoViejo.equals("Nublado")){
+        }else if(fondoNew.equals(getString(R.string.noche))){
+            if (!fondoViejo.equals(getString(R.string.nublado))){
                 transicionFondo.startTransition(5000);
             }
         }else{
@@ -513,13 +551,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
         fecha = df.format("dd-MM", new Date()).toString();
         txtDia.setText(fecha);
 
-
-
-        //Primitivos
-        //quizás esto habrái que guardarlo en otra parte...
-        //Y de hecho, una vez tengamos lo de los lumens, esto será innecesario -
-        //El fondo se cambiará en otro metodo ya que depende de variables difernetes
-        //a aquellas que controlan los iconos.
+        //primitivo
         primerChequeo = true;
 
 
@@ -527,14 +559,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     private void actualizarDatos (View view){
         listaDeDatosIzquierda.clear();
-        listaDeDatosIzquierda.add(new Datos_item("TEMP.", temeratura, "ºC"));
-        listaDeDatosIzquierda.add(new Datos_item("%HUM.", humedad, "%"));
-        listaDeDatosIzquierda.add(new Datos_item("LLUV.", lluvia, "mm/h"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.TEMP), temeratura, "ºC"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.HUM), humedad, "%"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.LLUVI), lluvia, "mm/h"));
 
         listaDeDatosDerecha.clear();
-        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", velViento, "Km/H"));
-        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", sensacionT, "ºC"));
-        listaDeDatosDerecha.add(new Datos_item("PRES.", presion, "Pa"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.VELVIENTO), velViento, "Km/H"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.STERMC), sensacionT, "ºC"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.PRES), presion, "Pa"));
 
 
         recyclerViewIZ = view.findViewById(R.id.RecycledDatosIzquierda);
@@ -556,20 +588,20 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     public void listasIniciales(View view) {
         //Arrays y listas
         actualWeather = new HashMap<>();
-        actualWeather.put("Soleado", false);
-        actualWeather.put("Nublado", false);
-        actualWeather.put("Ventoso", false);
-        actualWeather.put("Lloviendo", false);
+        actualWeather.put(getString(R.string.soleado), false);
+        actualWeather.put(getString(R.string.nublado), false);
+        actualWeather.put(getString(R.string.ventoso), false);
+        actualWeather.put(getString(R.string.contieneLloviendo), false);
 
         listaDeDatosIzquierda = new ArrayList<>();
-        listaDeDatosIzquierda.add(new Datos_item("TEMP", "30", "ºC"));
-        listaDeDatosIzquierda.add(new Datos_item("%HUM", "45", "%"));
-        listaDeDatosIzquierda.add(new Datos_item("LLUV", "0", "mm3"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.TEMP), "30", "ºC"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.HUM), "45", "%"));
+        listaDeDatosIzquierda.add(new Datos_item(getString(R.string.LLUVI), "0", "mm/h"));
 
         listaDeDatosDerecha = new ArrayList<>();
-        listaDeDatosDerecha.add(new Datos_item("VEL. VIENTO", "20", "Km/H"));
-        listaDeDatosDerecha.add(new Datos_item("S. TERMICA", "23", "ºC"));
-        listaDeDatosDerecha.add(new Datos_item("PRES", "34", "Atm"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.VELVIENTO), "20", "Km/H"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.STERMC), "23", "ºC"));
+        listaDeDatosDerecha.add(new Datos_item(getString(R.string.PRES), "34", "Pa"));
 
         //txtConsejo.setText("Hace un día estupendo para ir en bici!");
 
@@ -610,7 +642,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     @Override
     public void onClick(View v) {
         if (usuario != null) {
-            Log.d("DATOS", "Clicl userID : " + usuario.getUid().toString());
+            Log.d("DATOS", "Clicl userID : " + usuario.getUid());
             databaseReference = fireDataBase.getReference("movidas");
             databaseReference.child("User/" + usuario.getUid() + "-" + getUserGenero + "-" + getUserEdat)
                     .setValue("Buenas");

@@ -6,12 +6,12 @@ import android.util.Log;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Calculos {
+class Calculos {
 
     //Depende la luminosidad, cambias el fondo.
-    public static String devolverLuminosidad(String luxes, Activity activity) {
+    static String devolverLuminosidad(String luxes, Activity activity) {
         float luxesF = Float.parseFloat(luxes);
-        String luminosidadActual = "";
+        String luminosidadActual;
 
         if (luxesF <= 40) {
             luminosidadActual = activity.getString(R.string.noche);
@@ -25,7 +25,7 @@ public class Calculos {
     }
 
     //Procesa los datos recividos para indicar el tiempo que hace.
-    public static String comoEstaElTiempoEh(String mmCubicos,
+     static String comoEstaElTiempoEh(String mmCubicos,
                                             String velViento, String sensacionTermica, Activity activity) {
 
         String comoEstaElClima = "";
@@ -146,36 +146,37 @@ public class Calculos {
         Log.d("VALOR", "A pie: " + apie);
 
         Map<Integer, String> listaVehiculos = new TreeMap<>();
-        listaVehiculos.put(coche, "venir en coche");
-        listaVehiculos.put(bici, "venir en bici");
-        listaVehiculos.put(apie, "venir a pie");
-        listaVehiculos.put(tPub, "coger el transporte publico");
-        listaVehiculos.put(casa, "quedarte en casa");
+        listaVehiculos.put(coche, activity.getString(R.string.venirCoche));
+        listaVehiculos.put(bici, activity.getString(R.string.venirBici));
+        listaVehiculos.put(apie, activity.getString(R.string.venirAndando));
+        listaVehiculos.put(tPub, activity.getString(R.string.venirtpublico));
+        listaVehiculos.put(casa, activity.getString(R.string.noVenir));
 
         Log.d("VALOR", "Mapa " + listaVehiculos);
 
         String[] seleccionaricono = comoEstaElClima.split("-");
 
-        String enviar = "el cielo está despejado";
+        String enviar = activity.getString(R.string.despejadoSinGuion);
         for (String dato :
                 seleccionaricono) {
             Log.d("VALOR", "elemento " + dato);
 
-            if (dato.equals("HURACAN")) {
-                enviar = "HAY UN HURACAN";
+            if (dato.equals(activity.getString(R.string.contieneHuracan))) {
+                enviar = activity.getString(R.string.enviarHuracan);
                 break;
-            } else if (dato.contains("lluvia") || dato.contains("gotas")
-                    || dato.contains("lloviendo")
-                    || dato.contains("llueve")) {
+            } else if (dato.contains(activity.getString(R.string.contieneLluvia)) ||
+                    dato.contains(activity.getString(R.string.contieneGotas))
+                    || dato.contains(activity.getString(R.string.contieneLloviendo))
+                    || dato.contains(activity.getString(R.string.contieneLlueve))) {
                 enviar = dato;
-                if (dato.contains("vientos")) {
-                    enviar = "hay tormenta";
+                if (dato.contains(activity.getString(R.string.conteineVientos))) {
+                    enviar = activity.getString(R.string.enviarTormenta);
                     break;
                 }
                 break;
             } else {
-                if (dato.contains("vientos")) {
-                    enviar = "hay fuertes vientos";
+                if (dato.contains((activity.getString(R.string.conteineVientos)))) {
+                    enviar = (activity.getString(R.string.enviarFuertesVientos));
                 }
             }
             Log.d("VALOR", "dato a enviar de momento " + enviar);
