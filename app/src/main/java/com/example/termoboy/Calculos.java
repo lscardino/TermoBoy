@@ -1,5 +1,6 @@
 package com.example.termoboy;
 
+import android.app.Activity;
 import android.util.Log;
 
 import java.util.Map;
@@ -8,16 +9,16 @@ import java.util.TreeMap;
 public class Calculos {
 
     //Depende la luminosidad, cambias el fondo.
-    public static String devolverLuminosidad(String luxes) {
+    public static String devolverLuminosidad(String luxes, Activity activity) {
         float luxesF = Float.parseFloat(luxes);
         String luminosidadActual = "";
 
         if (luxesF <= 40) {
-            luminosidadActual = "Noche";
+            luminosidadActual = activity.getString(R.string.noche);
         } else if (luxesF <= 2000) {
-            luminosidadActual = "Nublado";
+            luminosidadActual = activity.getString(R.string.nublado);
         } else {
-            luminosidadActual = "el cielo está despejado";
+            luminosidadActual = activity.getString(R.string.cieloDespejado);
         }
 
         return luminosidadActual;
@@ -25,7 +26,7 @@ public class Calculos {
 
     //Procesa los datos recividos para indicar el tiempo que hace.
     public static String comoEstaElTiempoEh(String mmCubicos,
-                                            String velViento, String sensacionTermica, String presion) {
+                                            String velViento, String sensacionTermica, Activity activity) {
 
         String comoEstaElClima = "";
         float velVientoF = Float.valueOf(velViento);
@@ -40,41 +41,38 @@ public class Calculos {
 
         //Sensacion termica.
         if (sensacionTermicaF > 30) {
-            comoEstaElClima += "hace un calor abrasador-";
+            comoEstaElClima += activity.getString(R.string.sTermica30);
             apie--;
             tPub -= 2;
             coche += 2;
 
         } else if (sensacionTermicaF > 25) {
-            comoEstaElClima += "hace calorcete-";
+            comoEstaElClima += activity.getString(R.string.sTermica25);
             tPub--;
 
 
         } else if (sensacionTermicaF > 15) {
-            comoEstaElClima += "la temperatura es agradable-";
+            comoEstaElClima += activity.getString(R.string.sTermica15);
             bici += 2;
             apie++;
             coche -= 2;
 
 
         } else if (sensacionTermicaF > 7) {
+            comoEstaElClima += activity.getString(R.string.sTermica7);
             tPub += 2;
             apie++;
             coche--;
 
-            comoEstaElClima += "hace fresca-";
         } else if (sensacionTermicaF > 0) {
-            bici--;
-            apie--;
 
-
-            comoEstaElClima += "hace frio-";
+            comoEstaElClima += activity.getString(R.string.sTermica0);
             coche++;
             tPub += 2;
             bici -= 2;
 
         } else {
-            comoEstaElClima += "las temperaturas están bajo cero-";
+            comoEstaElClima += activity.getString(R.string.sTermicaM0);
             coche += 3;
             apie -= 3;
             bici -= 4;
@@ -83,25 +81,26 @@ public class Calculos {
 
         //Viento
         if (velVientoF > 110) {
-            comoEstaElClima += "HURACAN-";
+            comoEstaElClima += activity.getString(R.string.viento110);
             casa += 20;
 
         } else if (velVientoF > 40) {
-            comoEstaElClima += "fuertes vientos-";
+            comoEstaElClima += activity.getString(R.string.viento40);
             bici -= 3;
             apie -= 2;
             coche++;
             tPub += 2;
 
         } else {
-            comoEstaElClima += "una brisa agradable-";
+            comoEstaElClima += activity.getString(R.string.viento0);
             coche -= 4;
             bici += 3;
             apie += 3;
         }
 
+        //luvia
         if (mmCubicosF > 100) {
-            comoEstaElClima += "está lloviendo de forma torrencial-";
+            comoEstaElClima += activity.getString(R.string.mmh100);
             casa += 3;
             coche += 3;
             apie -= 6;
@@ -109,7 +108,7 @@ public class Calculos {
             tPub--;
 
         } else if (mmCubicosF > 40) {
-            comoEstaElClima += "Está cayendo una fuerte lluvia-";
+            comoEstaElClima += activity.getString(R.string.mmh40);
             coche += 3;
             apie -= 4;
             bici -= 5;
@@ -117,25 +116,25 @@ public class Calculos {
 
 
         } else if (mmCubicosF > 10) {
-            comoEstaElClima += "llueve moderadamente-";
+            comoEstaElClima += activity.getString(R.string.mmh10);
             coche++;
             apie -= 2;
             bici -= 2;
 
         } else if (mmCubicosF > 2.5) {
-            comoEstaElClima += "está lloviendo ligeramente-";
+            comoEstaElClima += activity.getString(R.string.mmh2_5);
             coche++;
             bici--;
 
 
         } else if (mmCubicosF > 0) {
-            comoEstaElClima += "están cayendo cuatro gotas-";
+            comoEstaElClima += activity.getString(R.string.mmh0_);
             tPub++;
             coche--;
 
 
         } else {
-            comoEstaElClima += "el clima está despejado-";
+            comoEstaElClima += activity.getString(R.string.mmhNada);
             apie += 3;
             bici += 5;
             coche -= 4;

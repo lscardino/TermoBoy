@@ -56,7 +56,7 @@
     <string name="viento110">HURACÁN-</string>
     <string name="viento40">fuertes vientos-</string>
     <string name="viento0">una brisa agradable-</string>
-    <string name="enviarHuracan">HAY UN HURACAN</string>
+    <string name="enviarHuracan">hay un HURACÁN</string>
     <string name="enviarTormenta">hay tormenta</string>
     <string name="enviarFuertesVientos">hay fuertes vientos</string>
 
@@ -83,6 +83,7 @@
     <!--Activity tiempo-->
     <string name="hoy">Hoy </string>
     <string name="recomendamos">, te recomendamos</string>
+
 
 
 </resources>

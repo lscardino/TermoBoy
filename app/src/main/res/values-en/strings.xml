@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="btEntrar">Go</string>
-    <string name="camposVacios">entries can\'t be empty</string>
+    <string name="camposVacios">Entries can\'t be empty</string>
     <string name="cieloDespejado">the sky is clear</string>
     <string name="conteineVientos">winds</string>
     <string name="contieneGotas">drop</string>

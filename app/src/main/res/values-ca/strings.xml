@@ -8,8 +8,8 @@
     <string name="contieneLloviendo">plovent</string>
     <string name="contieneLlueve">plou</string>
     <string name="contieneLluvia">pluja</string>
-    <string name="enviarHuracan">n\'hi ha un HURRACÀ</string>
-    <string name="enviarTormenta">n\'hi ha tormenta</string>
+    <string name="enviarHuracan">hi ha un HURRACÀ</string>
+    <string name="enviarTormenta">hi ha tormenta</string>
     <string name="hintEtxtEdat">Edat</string>
     <string name="hoy">Avui</string>
     <string name="imgTrasnporte">Imatge del mitjà de trasnport</string>
@@ -19,7 +19,7 @@
     <string name="mmh10">plou moderadament-</string>
     <string name="mmh100">plou de forma torrencial-</string>
     <string name="mmhNada">el cel està serè</string>
-    <string name="noVenir">quedarta a casa</string>
+    <string name="noVenir">quedarte a casa</string>
     <string name="noche">Nit</string>
     <string name="nublado">Ennuvolat</string>
     <string name="popUpAnonimo">Prefereixo no proporcioanr dades.</string>
@@ -42,7 +42,7 @@
     <string name="txtEdad">La teva edat</string>
     <string name="txtGenero">El teu gènere</string>
     <string name="txtVenirACalse">Com aniràs avui a classe?</string>
-    <string name="txttiempoNuevo">Imtge del temsp nou</string>
+    <string name="txttiempoNuevo">Imatge del temsp nou</string>
     <string name="venirAndando">vindre a peu</string>
     <string name="venirBici">vindre en bici</string>
     <string name="venirCoche">vindre en cotxe</string>
