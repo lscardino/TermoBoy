@@ -18,11 +18,11 @@ public class FragmentoDialogoAviso extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.popUpBienvenida)
-                .setPositiveButton("Vale", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.popUpVale), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 })
-                .setNegativeButton("Prefiero usar la app anonimamente", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.popUpAnonimo), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         activity = getActivity();
                         activity.findViewById(R.id.btnEntra).setEnabled(false);

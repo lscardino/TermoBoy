@@ -1,57 +1,37 @@
 package com.example.termoboy;
 
+import android.app.Activity;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.toMap;
-
-public class Calculos {
-    float presionF;
-    float velVientoF;
-    float humedadF;
-    float temeraturaF;
-    float mmCubicosF;
-    float sensacionTermicaF;
-    float cantidadPolvoF;
-
+class Calculos {
 
     //Depende la luminosidad, cambias el fondo.
-    public static String devolverLuminosidad(String luxes) {
+    static String devolverLuminosidad(String luxes, Activity activity) {
         float luxesF = Float.parseFloat(luxes);
-        String luminosidadActual = "";
+        String luminosidadActual;
 
         if (luxesF <= 40) {
-            luminosidadActual = "Noche";
-        } else if (luxesF <= 2000){
-            luminosidadActual = "Nublado";
+            luminosidadActual = activity.getString(R.string.noche);
+        } else if (luxesF <= 2000) {
+            luminosidadActual = activity.getString(R.string.nublado);
         } else {
-            luminosidadActual = "el cielo está despejado";
+            luminosidadActual = activity.getString(R.string.cieloDespejado);
         }
 
         return luminosidadActual;
     }
 
     //Procesa los datos recividos para indicar el tiempo que hace.
-    public static String comoEstaElTiempoEh(String mmCubicos,
-                                            String velViento, String sensacionTermica, String presion) {
+     static String comoEstaElTiempoEh(String mmCubicos,
+                                            String velViento, String sensacionTermica, Activity activity) {
 
         String comoEstaElClima = "";
         float velVientoF = Float.valueOf(velViento);
         float mmCubicosF = Float.valueOf(mmCubicos);
         float sensacionTermicaF = Float.valueOf(sensacionTermica);
-
-
-       // Map<String,Integer> contadoVehiculos = new HashMap<>();
 
         int coche = 0;
         int bici = 0;
@@ -59,87 +39,68 @@ public class Calculos {
         int tPub = 0;
         int casa = 0;
 
-
-
-
-
-
-
-
         //Sensacion termica.
         if (sensacionTermicaF > 30) {
-            comoEstaElClima += "hace un calor abrasador-";
+            comoEstaElClima += activity.getString(R.string.sTermica30);
             apie--;
             tPub -= 2;
             coche += 2;
 
         } else if (sensacionTermicaF > 25) {
-            comoEstaElClima += "hace calorcete-";
+            comoEstaElClima += activity.getString(R.string.sTermica25);
             tPub--;
 
 
         } else if (sensacionTermicaF > 15) {
-            comoEstaElClima += "la temperatura es agradable-";
+            comoEstaElClima += activity.getString(R.string.sTermica15);
             bici += 2;
             apie++;
             coche -= 2;
 
 
         } else if (sensacionTermicaF > 7) {
+            comoEstaElClima += activity.getString(R.string.sTermica7);
             tPub += 2;
             apie++;
             coche--;
 
-            comoEstaElClima += "hace fresca-";
         } else if (sensacionTermicaF > 0) {
-            bici--;
-            apie--;
 
-
-            comoEstaElClima += "hace frio-";
+            comoEstaElClima += activity.getString(R.string.sTermica0);
             coche++;
             tPub += 2;
             bici -= 2;
 
         } else {
-            comoEstaElClima += "las temperaturas están bajo cero-";
+            comoEstaElClima += activity.getString(R.string.sTermicaM0);
             coche += 3;
             apie -= 3;
             bici -= 4;
         }
 
-        //Luminosidad
-        //float luxesF = Float.parseFloat(luxes);
-
 
         //Viento
-        //Quizas 3 valores es muy poco
         if (velVientoF > 110) {
-            comoEstaElClima += "HURACAN-";
+            comoEstaElClima += activity.getString(R.string.viento110);
             casa += 20;
 
         } else if (velVientoF > 40) {
-            comoEstaElClima += "fuertes vientos-";
+            comoEstaElClima += activity.getString(R.string.viento40);
             bici -= 3;
             apie -= 2;
             coche++;
             tPub += 2;
 
         } else {
-            comoEstaElClima += "una brisa agradable-";
+            comoEstaElClima += activity.getString(R.string.viento0);
             coche -= 4;
             bici += 3;
             apie += 3;
-
-
         }
 
-        //Lluvia Intensidad (mm/h)
-
+        //luvia
         if (mmCubicosF > 100) {
-
-
-            comoEstaElClima += " está lloviendo de forma torrencial-";
+            comoEstaElClima += activity.getString(R.string.mmh100);
             casa += 3;
             coche += 3;
             apie -= 6;
@@ -147,7 +108,7 @@ public class Calculos {
             tPub--;
 
         } else if (mmCubicosF > 40) {
-            comoEstaElClima += "Está cayendo una fuerte lluvia-";
+            comoEstaElClima += activity.getString(R.string.mmh40);
             coche += 3;
             apie -= 4;
             bici -= 5;
@@ -155,40 +116,29 @@ public class Calculos {
 
 
         } else if (mmCubicosF > 10) {
-            comoEstaElClima += "llueve moderadamente-";
+            comoEstaElClima += activity.getString(R.string.mmh10);
             coche++;
             apie -= 2;
             bici -= 2;
 
         } else if (mmCubicosF > 2.5) {
-            comoEstaElClima += "está lloviendo ligeramente-";
+            comoEstaElClima += activity.getString(R.string.mmh2_5);
             coche++;
             bici--;
 
 
         } else if (mmCubicosF > 0) {
-            comoEstaElClima += "están cayendo cuatro gotas-";
+            comoEstaElClima += activity.getString(R.string.mmh0_);
             tPub++;
             coche--;
 
 
         } else {
-            comoEstaElClima += "el clima está despejado-";
+            comoEstaElClima += activity.getString(R.string.mmhNada);
             apie += 3;
             bici += 5;
             coche -= 4;
         }
-
-        /*
-        contadoVehiculos.add(coche);
-        contadoVehiculos.add(bici);
-        contadoVehiculos.add(tPub);
-        contadoVehiculos.add(apie);
-
-        Collections.sort(contadoVehiculos);
-        */
-
-
 
         Log.d("VALOR", "Coche: " + coche);
         Log.d("VALOR", "Bici: " + bici);
@@ -196,43 +146,43 @@ public class Calculos {
         Log.d("VALOR", "A pie: " + apie);
 
         Map<Integer, String> listaVehiculos = new TreeMap<>();
-        listaVehiculos.put(coche,"venir en coche");
-        listaVehiculos.put(bici,"venir en bici");
-        listaVehiculos.put(apie,"venir a pie");
-        listaVehiculos.put(tPub, "coger el transporte publico");
-        listaVehiculos.put(casa, "quedarte en casa");
+        listaVehiculos.put(coche, activity.getString(R.string.venirCoche));
+        listaVehiculos.put(bici, activity.getString(R.string.venirBici));
+        listaVehiculos.put(apie, activity.getString(R.string.venirAndando));
+        listaVehiculos.put(tPub, activity.getString(R.string.venirtpublico));
+        listaVehiculos.put(casa, activity.getString(R.string.noVenir));
 
         Log.d("VALOR", "Mapa " + listaVehiculos);
 
-        String [] seleccionaricono = comoEstaElClima.split("-");
+        String[] seleccionaricono = comoEstaElClima.split("-");
 
-        String enviar = "el cielo está despejado";
-        for (String dato:
-             seleccionaricono) {
-            Log.d("VALOR", "elemento " +  dato);
+        String enviar = activity.getString(R.string.despejadoSinGuion);
+        for (String dato :
+                seleccionaricono) {
+            Log.d("VALOR", "elemento " + dato);
 
-            if (dato.equals("HURACAN")){
-                enviar = "HAY UN HURACAN";
+            if (dato.equals(activity.getString(R.string.contieneHuracan))) {
+                enviar = activity.getString(R.string.enviarHuracan);
                 break;
-            }else if(dato.contains("lluvia") || dato.contains("gotas")
-                    || dato.contains("lloviendo")
-                    || dato.contains("llueve")){
-                enviar =  dato;
-                if  (dato.contains("vientos")){
-                    enviar = "hay tormenta";
+            } else if (dato.contains(activity.getString(R.string.contieneLluvia)) ||
+                    dato.contains(activity.getString(R.string.contieneGotas))
+                    || dato.contains(activity.getString(R.string.contieneLloviendo))
+                    || dato.contains(activity.getString(R.string.contieneLlueve))) {
+                enviar = dato;
+                if (dato.contains(activity.getString(R.string.conteineVientos))) {
+                    enviar = activity.getString(R.string.enviarTormenta);
                     break;
                 }
                 break;
-            }else{
-                //esto es despejado - pero hay que ver si hace frio o no
-                if (dato.contains("vientos")){
-                    enviar="hay fuertes vientos";}
+            } else {
+                if (dato.contains((activity.getString(R.string.conteineVientos)))) {
+                    enviar = (activity.getString(R.string.enviarFuertesVientos));
+                }
             }
             Log.d("VALOR", "dato a enviar de momento " + enviar);
 
         }
         Log.d("VALOR", "dato a enviar " + enviar);
-
 
 
         comoEstaElClima += ((TreeMap<Integer, String>) listaVehiculos).lastEntry().getValue() + "-" + enviar;

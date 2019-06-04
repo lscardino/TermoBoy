@@ -22,7 +22,7 @@
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1">
 
                 <ImageView
@@ -32,6 +32,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/txtDescripcionImagenTiempo"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -45,6 +46,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/txttiempoNuevo"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -58,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="Dia"
+                android:text="@string/txtDia"
                 android:textAlignment="center"
                 android:textColor="#F1ECEC"
                 android:textSize="24sp" />
@@ -88,7 +90,7 @@
             android:layout_marginHorizontal="20dp"
             android:gravity="center"
 
-            android:text="Consejo"
+            android:text="@string/txtConsejo"
             android:textAlignment="center"
             android:textColor="#F1ECEC"
             android:textSize="24sp" />
@@ -119,7 +121,8 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:id="@+id/DatosIzquierda"
@@ -235,11 +238,11 @@
                     <TextView
                         android:id="@+id/txtPolvo"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="5dp"
                         android:layout_weight="3"
-                        android:text="Cantidad de polvo en el aire:"
+                        android:text="@string/txtCantidaPolvo"
                         android:textAlignment="center"
                         android:textColor="#F1ECEC"
                         android:textSize="22sp" />

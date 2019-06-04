@@ -15,11 +15,11 @@ public class FragmentDialogSalir extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.popUpSalir)
-                .setPositiveButton("NO", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.popUpNegativo), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 })
-                .setNegativeButton("SI", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.popUpPositivo), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         activity = getActivity();
                         activity.finish();
