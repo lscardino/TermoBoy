@@ -43,7 +43,7 @@ public class MiraHoraInternet {
             try {
                 TimeTCPClient client = new TimeTCPClient();
                 try {
-                    client.setDefaultTimeout(30000);
+                    client.setDefaultTimeout(60000);
                     client.connect("time.nist.gov");
                     resultado = dateFormat.format(client.getDate());
                 } finally {

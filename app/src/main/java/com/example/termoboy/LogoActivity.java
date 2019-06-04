@@ -1,12 +1,13 @@
 package com.example.termoboy;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoActivity extends AppCompatActivity {
@@ -27,6 +28,12 @@ public class LogoActivity extends AppCompatActivity {
         btnSkip.setText(Integer.toString(CONTADOR));
         //btnSkip.setBackground(getDrawable(R.drawable.ic_arrow_forward_black_24dp));
 
+        ConstraintLayout layoutprincipal = findViewById(R.id.logoBackGround);
+
+        AnimationDrawable animationDrawable = (AnimationDrawable) layoutprincipal.getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.start();
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override

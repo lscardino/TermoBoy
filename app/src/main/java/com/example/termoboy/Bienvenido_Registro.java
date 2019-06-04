@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
         edatUser = findViewById(R.id.etxtEdat);
         generoUser = findViewById(R.id.spinnerGenero);
         btnEntra = findViewById(R.id.btnEntra);
-        LinearLayout layoutprincipal = findViewById(R.id.layoutrootBienvenida);
+        ScrollView layoutprincipal = findViewById(R.id.layoutrootBienvenida);
 
         AnimationDrawable animationDrawable = (AnimationDrawable) layoutprincipal.getBackground();
         animationDrawable.setEnterFadeDuration(2000);
