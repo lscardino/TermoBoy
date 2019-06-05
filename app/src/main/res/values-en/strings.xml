@@ -22,7 +22,7 @@
     <string name="mmh2_5">Its slightly raining-</string>
     <string name="mmh40">Its\'s pouring-</string>
     <string name="mmhNada">The sky is clear-</string>
-    <string name="noVenir">Feel free to stay at home-</string>
+    <string name="noVenir">feel free to stay at home</string>
     <string name="noche">Night</string>
     <string name="nublado">Cloudy</string>
     <string name="popUpAnonimo">I\'d rather sing in  anonymously</string>
@@ -46,9 +46,9 @@
     <string name="txtVenirACalse">How are you coming to school today?</string>
     <string name="txttiempoNuevo">new weather image</string>
     <string name="venirAndando">feel free to come by foot</string>
-    <string name="venirBici">time to undust your bike</string>
+    <string name="venirBici">time to take your bike for a ride</string>
     <string name="venirCoche">Better take the car</string>
-    <string name="venirtpublico">the train sounds like a good option</string>
+    <string name="venirtpublico">the train seems like a good option</string>
     <string name="viento0">it\'s slightly breezing-</string>
     <string name="viento110">HURRICANE-</string>
     <string name="viento40">thre are strong winds-</string>

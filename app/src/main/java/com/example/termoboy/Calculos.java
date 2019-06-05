@@ -80,11 +80,11 @@ class Calculos {
 
 
         //Viento
-        if (velVientoF > 1) {
+        if (velVientoF > 100) {
             comoEstaElClima += activity.getString(R.string.viento110);
             casa += 20;
 
-        } else if (velVientoF > 0.4) {
+        } else if (velVientoF > 40) {
             comoEstaElClima += activity.getString(R.string.viento40);
             bici -= 3;
             apie -= 2;
@@ -101,8 +101,8 @@ class Calculos {
         //luvia
         if (mmCubicosF > 100) {
             comoEstaElClima += activity.getString(R.string.mmh100);
-            casa += 3;
-            coche += 3;
+            casa += 2;
+            coche += 5;
             apie -= 6;
             bici -= 8;
             tPub--;
@@ -119,18 +119,23 @@ class Calculos {
             comoEstaElClima += activity.getString(R.string.mmh10);
             coche++;
             apie -= 2;
+            tPub+=5;
             bici -= 2;
 
         } else if (mmCubicosF > 2.5) {
             comoEstaElClima += activity.getString(R.string.mmh2_5);
             coche++;
-            bici--;
+            apie -= 2;
+            bici -= 2;
+            tPub+= 2;
 
 
         } else if (mmCubicosF > 0) {
             comoEstaElClima += activity.getString(R.string.mmh0_);
-            tPub++;
-            coche--;
+            tPub+= 2;
+            coche --;
+            apie--;
+            bici-=2;
 
 
         } else {
