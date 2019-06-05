@@ -35,10 +35,7 @@
     <string name="popUpPositivo">Sí</string>
     <string name="popUpNegativo">No</string>
     <!--Pop up Aviso-->
-    <string name="popUpBienvenida">Antes de continuar nos gustaría que nos proporcionases
-    un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,
-    esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor
-    experiencia a los usuarios.</string>
+    <string name="popUpBienvenida">Antes de continuar nos gustaría que nos proporcionases     un par de datos sobre ti. Mientras que el uso de nuestra app es anonimo,     esta informacion nos ayuda a mejorar nuestros servicios y a ofrecer una mejor     experiencia a los usuarios.</string>
     <string name="popUpVale">Vale</string>
     <string name="popUpAnonimo">Prefiero no proporcionar ningún dato</string>
     <!-- Calculos -->
@@ -79,7 +76,7 @@
     <string name="contieneLloviendo">lloviendo</string>
     <string name="contieneLlueve">llueve</string>
     <string name="conteineVientos">vientos</string>
-    <string name="contieneHuracan">HURACAN</string>
+    <string name="contieneHuracan">HURACÁN</string>
 
     <!--Activity tiempo-->
     <string name="hoy">Hoy </string>
@@ -100,6 +97,16 @@
     <string name="STERMC">S. TÉRMICA</string>
     <string name="PRES" translatable="false">PRES.</string>
     <string name="nivelDePolvo">Nivel de polvo:</string>
+
+    <!-- vEHICULOS -->
+    <string name="coche">Coche</string>
+    <string name="bici">Bici</string>
+    <string name="tPub">T. Público</string>
+    <string name="Caminando">Caminando</string>
+
+    <!-- Polvo-->
+    <string name="pAlto">Alto</string>
+    <string name="pBajo">Bajo</string>
 
 
 </resources>

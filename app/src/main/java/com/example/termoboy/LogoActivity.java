@@ -25,7 +25,8 @@ public class LogoActivity extends AppCompatActivity {
         imgTiempo.setImageDrawable(imgTiempoNuevo.getDrawable()); }
 */
         btnSkip = findViewById(R.id.btn_Skip);
-        btnSkip.setText(Integer.toString(CONTADOR));
+        btnSkip.setVisibility(View.INVISIBLE);
+        //btnSkip.setText(Integer.toString(CONTADOR));
         //btnSkip.setBackground(getDrawable(R.drawable.ic_arrow_forward_black_24dp));
 
         ConstraintLayout layoutprincipal = findViewById(R.id.logoBackGround);
@@ -35,6 +36,7 @@ public class LogoActivity extends AppCompatActivity {
         animationDrawable.setExitFadeDuration(4000);
         animationDrawable.start();
 
+        /*
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +49,7 @@ public class LogoActivity extends AppCompatActivity {
                 btnSkip.setEnabled(true);
                 super.finalize();
             }
-        });
+        });*/
 
         new ThreadContador().start();
     }
@@ -81,7 +83,7 @@ public class LogoActivity extends AppCompatActivity {
                 btnSkip.post(new Runnable() {
                     @Override
                     public void run() {
-                        btnSkip.setText(String.valueOf(resPost));
+                      //  btnSkip.setText(String.valueOf(resPost));
                     }
                 });
                 try {

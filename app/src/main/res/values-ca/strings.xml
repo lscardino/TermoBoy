@@ -50,11 +50,10 @@
     <string name="viento0">una brisa agradable-</string>
     <string name="viento110">HURACÀ-</string>
     <string name="viento40">forts vents-</string>
-    <string name="enviarFuertesVientos">--</string>
+    <string name="enviarFuertesVientos">el vent bufa fort</string>
     <string name="mmh0_">cuasi no plou-</string>
     <string name="mmh2_5">està plovent una mica-</string>
     <string name="mmh40">està caient una bona-</string>
-    <string name="popUpBienvenida">--</string>
     <string name="Viento">Vent</string>
     <string name="Lluvia">Pluja</string>
     <string name="contieneHuracan">HURACÀ</string>
@@ -66,4 +65,11 @@
     <string name="soleado">" Assolellat"</string>
     <string name="ventoso">Ventòs</string>
     <string name="nivelDePolvo">Nivell de pols:</string>
+    <string name="bici">Bici</string>
+    <string name="coche">Cotxe</string>
+    <string name="tPub">T. Públic</string>
+    <string name="pAlto">Alt</string>
+    <string name="pBajo">Baix</string>
+    <string name="popUpBienvenida">" Abans de continuar ens agradaria que omplissis un petit qüestionari. Mentre que l'ús de la nostra aplicació és completament anònim, aquestes dades ens ajuden a millorar el nostre servei i l'experiència de l'usuari."</string>
+    <string name="Caminando">Caminant</string>
 </resources>

@@ -15,7 +15,7 @@ class Calculos {
 
         if (luxesF <= 40) {
             luminosidadActual = activity.getString(R.string.noche);
-        } else if (luxesF <= 2000) {
+        } else if (luxesF <= 10000) {
             luminosidadActual = activity.getString(R.string.nublado);
         } else {
             luminosidadActual = activity.getString(R.string.cieloDespejado);
@@ -80,11 +80,11 @@ class Calculos {
 
 
         //Viento
-        if (velVientoF > 110) {
+        if (velVientoF > 1) {
             comoEstaElClima += activity.getString(R.string.viento110);
             casa += 20;
 
-        } else if (velVientoF > 40) {
+        } else if (velVientoF > 0.4) {
             comoEstaElClima += activity.getString(R.string.viento40);
             bici -= 3;
             apie -= 2;

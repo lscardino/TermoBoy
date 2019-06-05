@@ -1,25 +1,15 @@
 package com.example.termoboy;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
@@ -30,22 +20,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,13 +46,8 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     LinearLayout layoutPrincipal;
-    TextView txtTemp;
-    TextView txtHumedad;
-    TextView txtLluvia;
-    TextView txtPresion;
     TextView txtDia;
     TextView txtConsejo;
-    TextView txtInforGeneral;
     TextView txtNivelPolvo;
 
     ImageView imgTiempo;
@@ -101,8 +77,6 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     boolean primerChequeo;
 
     Map<String, Boolean> actualWeather;
-    String anteriorWeather = "Soleado";
-    String nuevoWeather;
     ArrayList<Datos_item> listaDeDatosIzquierda;
     ArrayList<Datos_item> listaDeDatosDerecha;
 
@@ -132,14 +106,8 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
     SharedPreferences.Editor editor;
 
     private FusedLocationProviderClient client;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
-    private LocationManager mLocationManager;
 
-    private LocationRequest mLocationRequest;
     private com.google.android.gms.location.LocationListener listener;
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
 
     public MenuPrincipalActivity() {
@@ -215,7 +183,12 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
                                         //Abajo
                                         polvo = child.child("Polvo").getValue().toString();
-                                        txtNivelPolvo.setText(getActivity().getString(R.string.nivelDePolvo) + polvo);
+                                        if (Float.parseFloat(polvo) > 0.25){
+                                            txtNivelPolvo.setText(getActivity().getString(R.string.nivelDePolvo) + " " + getString(R.string.pAlto));
+
+                                        }else{
+                                            txtNivelPolvo.setText(getActivity().getString(R.string.nivelDePolvo) + " " +getString(R.string.pBajo));
+                                        }
 
                                         //Lumens
                                         lumens = child.child("Lumens").getValue().toString();
@@ -346,35 +319,14 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
 
     //Hace los calculas para saber que decirle al user, quizas sería menester poner esto en otra
     //clase
-    public String estadoActual() {
-        float presionF = Float.parseFloat(presion);
-        float velVientoF = Float.parseFloat(velViento);
-        float humedadF = Float.parseFloat(humedad);
-        float temeraturaF = Float.parseFloat(temeratura);
-//        float mmCubicosF = Float.parseFloat(mmCubicos);
 
-        String actual;
 
-        if (temeraturaF > 50.0) {
-            //Está lloviendo
-            actual = getString(R.string.nublado);
-            Log.d("DATOS", "Segun los datos está Nublado");
-
-        } else if (velVientoF > 100) {
-            //Hace viento
-            actual = getString(R.string.ventoso);
-        } else {
-            //Hace sol - de hecho habría que mirar lo de la luminosidad.
-            actual = getString(R.string.soleado);
-            Log.d("DATOS", "segun lso datos está Soleado");
-        }
-
-        return actual;
-
-        //limpiarBools(actual);
-    }
-
-    ///OJO SI CAMBIAS LOS STRINGS
+    ///CABMIAR LOS STRINGS
+    /////////////////
+    //////////////
+    ///////////////////
+    ///////////////
+    ////////////
     private String vivesToLejos(String vehiculo){
         switch (vehiculo){
             //Bici
@@ -436,20 +388,15 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
             tiempoNuevo = getString(R.string.Viento);
             //Viento
         } else if(tiempoNuevo.contains(getString(R.string.despejado))){
-            if (Integer.valueOf(lumens)<=40) {
+            if (Float.parseFloat(lumens)<=40) {
                 tiempoNuevo = getString(R.string.noche);
-            }else if(Integer.valueOf(lumens)<=2000){
+            }else if(Float.parseFloat(lumens)<=2000){
                 tiempoNuevo = getString(R.string.nublado);
             }else{
                 tiempoNuevo = getString(R.string.Solete);
             }
-            //despejado
-            //Hay que mirar lo de los lumnes aki y de hecho
-            //Cambiar el icono tmb
         }
 
-        //Esto lo hace al revés, pero porque le pasas el valor del tiempo anterior, no del Nuevo.
-        //YA NO, já!
         switch (tiempoNuevo) {
             case "Viento":
             case "Vent":
@@ -470,7 +417,7 @@ public class MenuPrincipalActivity extends Fragment implements OnClickListener{
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_lluvia));
                 //transicionFondo.startTransition(5000);
                 break;
-            case "HURACAN":
+            case "HURACÁN":
             case "HURACÀ":
             case "HURRICANE":
                 imgTiempoNuevo.setImageDrawable(getResources().getDrawable(R.drawable.ic_tornado));

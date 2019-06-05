@@ -58,7 +58,7 @@ public class Bienvenido_Registro extends AppCompatActivity {
         edatUser = findViewById(R.id.etxtEdat);
         generoUser = findViewById(R.id.spinnerGenero);
         btnEntra = findViewById(R.id.btnEntra);
-        ScrollView layoutprincipal = findViewById(R.id.layoutrootBienvenida);
+        LinearLayout layoutprincipal = findViewById(R.id.layoutrootBienvenida);
 
         AnimationDrawable animationDrawable = (AnimationDrawable) layoutprincipal.getBackground();
         animationDrawable.setEnterFadeDuration(2000);
@@ -149,35 +149,5 @@ public class Bienvenido_Registro extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
-    private void pillarLocalizacion() {
-
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("LOCATION", "No accedo localizacion");
-            requestlocation();
-        }
-        client.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    Log.d("LOCATION", "La location NO es null");
-                    double latitud = location.getLatitude();
-                    double longitud = location.getLongitude();
-
-                    Location paco = new Location("nico");
-
-                    paco.setLatitude(41.569363);
-                    paco.setLongitude(1.995336);
-
-                    double dsitancia = location.distanceTo(paco);
-
-                    Log.d("LOCATION", "dsitancia total " + dsitancia / 1000 + "Km");
-
-
-                } else {
-                    Log.d("LOCATION", "La location es null");
-                }
-            }
-        });
-    }
 }
 
